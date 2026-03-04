@@ -12,12 +12,13 @@ const corsOptions = {
   allowedHeaders: ["*"],
 };
 
-const { Pool } = require('pg');
+import pkg from 'pg';
+const { Pool } = pkg;
 
 const db = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized: false 
+    rejectUnauthorized: false // ΑΥΤΟ ΕΙΝΑΙ ΤΟ ΚΛΕΙΔΙ ΓΙΑ ΤΟ RENDER
   }
 });
 
