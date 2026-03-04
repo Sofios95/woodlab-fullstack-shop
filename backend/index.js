@@ -14,10 +14,10 @@ const corsOptions = {
 
 const { Pool } = require('pg');
 
-const pool = new Pool({
+const db = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized: false // ΑΥΤΟ ΕΙΝΑΙ ΤΟ ΚΛΕΙΔΙ ΓΙΑ ΤΟ RENDER
+    rejectUnauthorized: false 
   }
 });
 
