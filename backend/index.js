@@ -7,17 +7,16 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 const corsOptions = {
-  origin: "http://localhost:5173",
+  origin: "*",
   methods: "*",
   allowedHeaders: ["*"],
 };
 
 const db = new pg.Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_DATABASE,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
 
 app.use(cors(corsOptions));
@@ -201,6 +200,6 @@ app.put("/api/admin/orders/:id/status", async (req, res) => {
   }
 });
 
-app.listen(port, "0.0.0.0", () => {
-  console.log(`Server running on port ${port}`);
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
 });
