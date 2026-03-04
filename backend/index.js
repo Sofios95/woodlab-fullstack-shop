@@ -4,7 +4,7 @@ import pg from "pg";
 import cors from "cors";
 
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 
 const corsOptions = {
   origin: "http://localhost:5173",
