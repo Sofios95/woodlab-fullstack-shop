@@ -14,7 +14,7 @@ function App() {
   return (
     <div className="app-container">
       <Header />
-      <main className="main-content"> {/* Καλό είναι να έχεις ένα main container */}
+      <main className="main-content"> 
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/secret-admin-gate" element={<Admin />} />

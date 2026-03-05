@@ -21,14 +21,14 @@ function CheckoutPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Δημιουργία του αντικειμένου παραγγελίας με ΟΛΑ τα στοιχεία της φόρμας
+    
     const orderData = {
       fullName: formData.fullName,
       email: formData.email,
       address: formData.address,
       phone: formData.phone,
       items: cartItems,
-      total: totalAmount, // Το στέλνουμε ως "total" για να το βρει το backend
+      total: totalAmount, 
     };
 
     try {

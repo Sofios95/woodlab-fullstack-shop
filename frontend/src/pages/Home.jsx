@@ -3,18 +3,16 @@ import axios from "axios";
 import { useCart } from '../context/useCart';
 
 function Home() {
-  const [products, setProducts] = useState([]); // Αλλαγή σε setProducts (camelCase)
+  const [products, setProducts] = useState([]);
   const { addToCart } = useCart(); 
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await axios.get("http://localhost:5000/api/home");
-        // Με το Axios, τα δεδομένα είναι πάντα στο .data
+        const response = await axios.get("https://woodlab-fullstack-shop.onrender.com/api/home");
         setProducts(response.data);
       } catch (error) {
         console.error("Error fetching products:", error);
-        // Εδώ θα μπορούσες να βάλεις ένα state για error μήνυμα
       }
     }
     fetchData();

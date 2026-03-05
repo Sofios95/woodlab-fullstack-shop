@@ -1,6 +1,6 @@
-import 'dotenv/config';
+import "dotenv/config";
 import express from "express";
-import pkg from 'pg';
+import pkg from "pg";
 import cors from "cors";
 
 const app = express();
@@ -12,19 +12,17 @@ const corsOptions = {
   allowedHeaders: ["*"],
 };
 
-
 const { Pool } = pkg;
 
 const db = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized: false
-  }
+    rejectUnauthorized: false,
+  },
 });
 
 app.use(cors(corsOptions));
 app.use(express.json());
-
 
 app.get("/api/home", async (req, res) => {
   try {
@@ -35,8 +33,6 @@ app.get("/api/home", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-
 
 app.post("/api/admin", async (req, res) => {
   try {
@@ -53,11 +49,10 @@ app.post("/api/admin", async (req, res) => {
   }
 });
 
-
 app.post("/api/orders", async (req, res) => {
   const client = await db.connect();
   try {
-    const { total, items, fullName, email, phone, address } = req.body; 
+    const { total, items, fullName, email, phone, address } = req.body;
     await client.query("BEGIN");
     const orderRes = await client.query(
       `INSERT INTO orders (
@@ -69,7 +64,7 @@ app.post("/api/orders", async (req, res) => {
         customer_phone, 
         customer_address
       ) VALUES ($1, $2, NOW(), $3, $4, $5, $6) RETURNING id`,
-      [total, "pending", fullName, email, phone, address]
+      [total, "pending", fullName, email, phone, address],
     );
     const orderId = orderRes.rows[0].id;
     const itemsQuery = `
@@ -82,7 +77,12 @@ app.post("/api/orders", async (req, res) => {
       WHERE id = $2
     `;
     for (const item of items) {
-      await client.query(itemsQuery, [orderId, item.id, item.quantity, item.price]);
+      await client.query(itemsQuery, [
+        orderId,
+        item.id,
+        item.quantity,
+        item.price,
+      ]);
       await client.query(updateStockQuery, [item.quantity, item.id]);
     }
     await client.query("COMMIT");
@@ -90,7 +90,9 @@ app.post("/api/orders", async (req, res) => {
   } catch (err) {
     await client.query("ROLLBACK");
     console.error("Order Error:", err.message);
-    res.status(500).json({ error: "Σφάλμα κατά την αποθήκευση: " + err.message });
+    res
+      .status(500)
+      .json({ error: "Σφάλμα κατά την αποθήκευση: " + err.message });
   } finally {
     client.release();
   }
@@ -141,7 +143,7 @@ app.delete("/api/admin/orders/:id", async (req, res) => {
 app.put("/api/admin/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, price, description, image_url, stock_quantity } = req.body; 
+    const { name, price, description, image_url, stock_quantity } = req.body;
     await db.query(
       "UPDATE products SET name=$1, price=$2, description=$3, image_url=$4, stock_quantity=$5 WHERE id=$6",
       [name, price, description, image_url, stock_quantity, id],
@@ -159,14 +161,13 @@ app.get("/api/admin/orders", async (req, res) => {
       SELECT * FROM orders 
       ORDER BY created_at DESC
     `);
-    
+
     res.json(result.rows);
   } catch (err) {
     console.error("Orders SQL Error:", err);
     res.status(500).json({ error: "Αποτυχία ανάκτησης παραγγελιών" });
   }
 });
-
 
 app.put("/api/admin/orders/:id/status", async (req, res) => {
   const { id } = req.params;
