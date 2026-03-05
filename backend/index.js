@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import express from "express";
-import pg from "pg";
+import pkg from 'pg';
 import cors from "cors";
 
 const app = express();
@@ -12,13 +12,13 @@ const corsOptions = {
   allowedHeaders: ["*"],
 };
 
-import pkg from 'pg';
+
 const { Pool } = pkg;
 
 const db = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized: false // ΑΥΤΟ ΕΙΝΑΙ ΤΟ ΚΛΕΙΔΙ ΓΙΑ ΤΟ RENDER
+    rejectUnauthorized: false
   }
 });
 
@@ -57,12 +57,8 @@ app.post("/api/admin", async (req, res) => {
 app.post("/api/orders", async (req, res) => {
   const client = await db.connect();
   try {
-    // 1. Παίρνουμε τα δεδομένα από το request body
     const { total, items, fullName, email, phone, address } = req.body; 
-
-    await client.query("BEGIN"); // Ξεκινάμε τη συναλλαγή
-
-    // 2. Εισαγωγή στον πίνακα orders (με NOW() για την ημερομηνία)
+    await client.query("BEGIN");
     const orderRes = await client.query(
       `INSERT INTO orders (
         total_amount, 
@@ -75,10 +71,7 @@ app.post("/api/orders", async (req, res) => {
       ) VALUES ($1, $2, NOW(), $3, $4, $5, $6) RETURNING id`,
       [total, "pending", fullName, email, phone, address]
     );
-    
     const orderId = orderRes.rows[0].id;
-
-    // 3. Εισαγωγή προϊόντων στο order_items & Ενημέρωση αποθέματος (Stock)
     const itemsQuery = `
       INSERT INTO order_items (order_id, product_id, quantity, price_at_purchase) 
       VALUES ($1, $2, $3, $4)
@@ -88,19 +81,14 @@ app.post("/api/orders", async (req, res) => {
       SET stock_quantity = stock_quantity - $1 
       WHERE id = $2
     `;
-
     for (const item of items) {
-      // Προσθήκη του item στην παραγγελία
       await client.query(itemsQuery, [orderId, item.id, item.quantity, item.price]);
-      // Αφαίρεση από το stock
       await client.query(updateStockQuery, [item.quantity, item.id]);
     }
-
-    await client.query("COMMIT"); // Ολοκλήρωση επιτυχώς
+    await client.query("COMMIT");
     res.status(201).json({ message: "Order placed!", orderId: orderId });
-
   } catch (err) {
-    await client.query("ROLLBACK"); // Ακύρωση σε περίπτωση σφάλματος
+    await client.query("ROLLBACK");
     console.error("Order Error:", err.message);
     res.status(500).json({ error: "Σφάλμα κατά την αποθήκευση: " + err.message });
   } finally {
@@ -108,8 +96,6 @@ app.post("/api/orders", async (req, res) => {
   }
 });
 
-
-// GET: Προϊόντα ανά κατηγορία
 app.get("/products/category/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -139,13 +125,8 @@ app.delete("/api/admin/orders/:id", async (req, res) => {
   try {
     const { id } = req.params;
     await client.query("BEGIN");
-    
-    // Πρώτα σβήνουμε τα items της παραγγελίας για να μη φάμε error
     await client.query("DELETE FROM order_items WHERE order_id = $1", [id]);
-    
-    // Μετά σβήνουμε την ίδια την παραγγελία
     await client.query("DELETE FROM orders WHERE id = $1", [id]);
-    
     await client.query("COMMIT");
     res.json({ message: "Order and items deleted!" });
   } catch (err) {
@@ -160,10 +141,7 @@ app.delete("/api/admin/orders/:id", async (req, res) => {
 app.put("/api/admin/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    // ΠΡΟΣΤΕΘΗΚΕ ΤΟ stock_quantity ΣΤΟ DESTRUCTURING
     const { name, price, description, image_url, stock_quantity } = req.body; 
-    
-    // ΠΡΟΣΤΕΘΗΚΕ ΤΟ stock_quantity ΣΤΟ UPDATE QUERY ΚΑΙ ΤΟ $6
     await db.query(
       "UPDATE products SET name=$1, price=$2, description=$3, image_url=$4, stock_quantity=$5 WHERE id=$6",
       [name, price, description, image_url, stock_quantity, id],
@@ -177,8 +155,6 @@ app.put("/api/admin/:id", async (req, res) => {
 
 app.get("/api/admin/orders", async (req, res) => {
   try {
-    // Παίρνουμε τα πάντα απευθείας από τον πίνακα orders
-    // Δεν χρειαζόμαστε το JOIN με τους users πλέον
     const result = await db.query(`
       SELECT * FROM orders 
       ORDER BY created_at DESC
