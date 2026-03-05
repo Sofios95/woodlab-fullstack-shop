@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useState, useEffect } from "react";
 
-// Το εξάγουμε για να το βλέπει το UseCart.jsx
+
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
