@@ -1,20 +1,20 @@
-/* App.css ή index.css */
+
 .app-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Γεμίζει όλη την οθόνη ύψος */
-  background-color: #056e1cb7; /* Το Woodlab πράσινο */
+  min-height: 100vh;
+  background-color: #056e1cb7;
 }
 
 .main-content {
-  flex: 1; /* Σπρώχνει τον footer κάτω αν η σελίδα είναι μικρή */
+  flex: 1;
   width: 100%;
-  max-width: 1200px; /* Το περιεχόμενο των σελίδων δεν απλώνει υπερβολικά */
-  margin: 0 auto;    /* Κεντράρισμα */
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 40px 20px;
 }
 
-/* Global transitions για να είναι ομαλές οι εναλλαγές */
+
 .main-content {
   animation: fadeIn 0.4s ease-in;
 }

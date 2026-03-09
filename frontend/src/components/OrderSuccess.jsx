@@ -1,12 +1,11 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import './OrderSuccess.css'; // Το δικό του CSS
+import './OrderSuccess.css';
 
 function OrderSuccess() {
   const navigate = useNavigate();
   const location = useLocation();
   
-  // Αν κάποιος μπει στη σελίδα χωρίς παραγγελία (π.χ. refresh), δείχνουμε N/A
   const orderId = location.state?.orderId || "N/A";
 
   return (

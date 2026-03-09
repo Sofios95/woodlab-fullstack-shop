@@ -1,4 +1,4 @@
-/* OrderSuccess.css */
+
 .success-container {
     display: flex;
     justify-content: center;
@@ -25,7 +25,7 @@
 
 .success-icon {
     font-size: 4rem;
-    color: #28a745; /* Πράσινο της επιτυχίας */
+    color: #28a745;
     margin-bottom: 20px;
 }
 
