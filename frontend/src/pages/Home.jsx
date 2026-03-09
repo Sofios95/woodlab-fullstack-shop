@@ -1,42 +1,57 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useCart } from '../context/useCart';
-import { toast, ToastContainer } from 'react-toastify'; // Προσθήκη Toast
-import 'react-toastify/dist/ReactToastify.css'; // Προσθήκη CSS του Toast
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Home() {
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true); // Loader State
+  const [error, setError] = useState(null);    // Error State
   const { addToCart } = useCart(); 
 
   useEffect(() => {
     async function fetchData() {
       try {
+        setLoading(true);
         const response = await axios.get("https://woodlab-fullstack-shop.onrender.com/api/home");
         setProducts(response.data);
       } catch (error) {
         console.error("Error fetching products:", error);
+        setError("Αποτυχία φόρτωσης προϊόντων. Δοκιμάστε ξανά αργότερα.");
+      } finally {
+        setLoading(false); // Σταματάει ο loader ό,τι και να γίνει
       }
     }
     fetchData();
   }, []);
 
-  // Συνάρτηση για την εμφάνιση του notification
   const handleAddToCart = (product) => {
     addToCart(product);
     toast.success(`${product.name} προστέθηκε στο καλάθι! 🪵`, {
       position: "bottom-right",
       autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
       theme: "dark",
     });
   };
 
+  // 1. Εμφάνιση Loader όσο φορτώνει
+  if (loading) {
+    return (
+      <div className="loader-container">
+        <div className="spinner"></div> 
+        <p>Φορτώνουμε τα ξύλινα αριστουργήματα... 🪵</p>
+      </div>
+    );
+  }
+
+  // 2. Εμφάνιση Error αν κάτι πάει στραβά
+  if (error) {
+    return <div className="error-message">{error}</div>;
+  }
+
   return (
     <div className="home-main">
-      {/* Το Container πρέπει να υπάρχει στη σελίδα για να φαίνονται τα μηνύματα */}
       <ToastContainer />
 
       <div className="home-header">
@@ -45,22 +60,23 @@ function Home() {
       </div>
 
       <div className="product-grid">
-        {products.map((p) => (
-          <div key={p.id} className="product-card">
-            <img src={p.image_url} alt={p.name} />
-
-            <div className="product-info">
-              <h3>{p.name}</h3>
-              <p>{p.description}</p>
-              <div className="price-tag">{p.price}€</div>
-
-              {/* Εδώ καλούμε τη νέα συνάρτηση handleAddToCart */}
-              <button className="about-btn" onClick={() => handleAddToCart(p)}>
-                ADD TO CART
-              </button>
+        {products.length > 0 ? (
+          products.map((p) => (
+            <div key={p.id} className="product-card">
+              <img src={p.image_url} alt={p.name} />
+              <div className="product-info">
+                <h3>{p.name}</h3>
+                <p>{p.description}</p>
+                <div className="price-tag">{p.price}€</div>
+                <button className="about-btn" onClick={() => handleAddToCart(p)}>
+                  ADD TO CART
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p>Δεν βρέθηκαν προϊόντα.</p>
+        )}
       </div>
     </div>
   );
