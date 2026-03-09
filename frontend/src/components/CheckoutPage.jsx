@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useCart } from '../context/useCart'; 
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import './CheckoutPage.css';
+
 
 function CheckoutPage() {
   const { cartItems, totalAmount, clearCart } = useCart();

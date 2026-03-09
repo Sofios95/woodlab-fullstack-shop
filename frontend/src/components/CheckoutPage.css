@@ -1,0 +1,147 @@
+/* CheckoutPage.css */
+.checkout-page {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.checkout-title {
+    text-align: center;
+    color: #4a3728; /* Woodlab Brown */
+    margin-bottom: 30px;
+    font-size: 2rem;
+}
+
+.checkout-container {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+}
+
+/* Φόρμα (Αριστερή Πλευρά) */
+.checkout-form-section {
+    flex: 1.5;
+    background: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.checkout-form-section h3 {
+    margin-bottom: 25px;
+    color: #5d4037;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 10px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #444;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #a67c52;
+}
+
+/* Σύνοψη Παραγγελίας (Δεξιά Πλευρά) */
+.order-summary-section {
+    flex: 1;
+    background: #fdfaf7;
+    padding: 25px;
+    border-radius: 15px;
+    border: 1px solid #eaddcf;
+    position: sticky;
+    top: 100px; /* Για να σε ακολουθεί στο scroll */
+}
+
+.summary-list {
+    margin-bottom: 20px;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.item-name {
+    font-weight: 500;
+}
+
+.item-name small {
+    color: #777;
+    margin-left: 5px;
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 2px solid #a67c52;
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #4a3728;
+}
+
+/* Κουμπί Επιβεβαίωσης */
+.confirm-btn {
+    width: 100%;
+    padding: 15px;
+    background-color: #a67c52;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+}
+
+.confirm-btn:hover {
+    background-color: #5d4037;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* Empty State */
+.checkout-empty {
+    text-align: center;
+    padding: 100px 20px;
+    color: white;
+}
+
+.checkout-empty h2 {
+    margin-bottom: 20px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .checkout-container {
+        flex-direction: column;
+    }
+    
+    .order-summary-section {
+        width: 100%;
+        position: static;
+    }
+}

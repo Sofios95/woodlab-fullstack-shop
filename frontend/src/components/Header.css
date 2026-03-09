@@ -1,4 +1,4 @@
-/* Header.css */
+
 .header-container {
     width: 100%;
     background-color: #ffffff;
@@ -9,18 +9,17 @@
 }
 
 .header-content {
-    /* Εδώ είναι το κλειδί: Πιάνει όλο το πλάτος */
     width: 100%; 
     max-width: 100%; 
     display: flex;
-    justify-content: space-between; /* Σπρώχνει τα άκρα */
+    justify-content: space-between;
     align-items: center;
-    padding: 0 40px; /* Δίνει αέρα αριστερά και δεξιά */
-    height: 70px;    /* Slim ύψος */
+    padding: 0 40px;
+    height: 70px;
 }
 
 .logo-img {
-    height: 50px; /* Μικρότερο logo για slim AppBar */
+    height: 50px;
     width: auto;
     display: block;
 }

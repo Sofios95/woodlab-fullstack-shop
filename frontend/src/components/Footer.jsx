@@ -1,22 +1,44 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import "./Footer.css";
 
 function Footer() {
   const currentYear = new Date().getFullYear();
+
   return (
-    <div className="footer-container">
+    <footer className="footer-container">
       <div className="footer-links">
-        <a href="https://www.facebook.com/Woodlab.gr/?locale=el_GR">Facebook</a>
-        <br />
-        <a href="https://www.instagram.com/woodlabgr/">Instagram</a>
-        <br />
-        <a href="https://woodlab.gr/">Woodlab®</a>
+        <a
+          href="https://www.facebook.com/Woodlab.gr/?locale=el_GR"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Facebook
+        </a>
+        <a
+          href="https://www.instagram.com/woodlabgr/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Instagram
+        </a>
+        <a href="https://woodlab.gr/" target="_blank" rel="noopener noreferrer">
+          Woodlab®
+        </a>
       </div>
-      <Link to="/aboutus">About us</Link>
+
+      <Link to="/aboutus" className="about-link">
+        About us
+      </Link>
+
       <p className="copyright">© Copyright {currentYear} | by DevSof</p>
-      <Link to="/secret-admin-gate" style={{ color: 'transparent' }}>.</Link>
-    </div>
-    
+
+      
+      <Link to="/secret-admin-gate" className="secret-link">
+        .
+      </Link>
+    </footer>
   );
 }
+
 export default Footer;

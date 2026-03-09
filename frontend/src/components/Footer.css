@@ -1,0 +1,44 @@
+/* Footer.css */
+.footer-container {
+    background-color: #1a1a1a; /* Σκούρο ανθρακί για αντίθεση με το πράσινο */
+    color: #ffffff;
+    padding: 40px 20px;
+    text-align: center;
+    width: 100%;
+    margin-top: auto; /* Το σπρώχνει στο τέλος αν το App είναι flex */
+}
+
+.footer-links {
+    margin-bottom: 20px;
+}
+
+.footer-links a {
+    color: #a67c52; /* Woodlab Brown */
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+    display: inline-block;
+    margin: 5px 0;
+}
+
+.footer-links a:hover {
+    color: #ffffff;
+}
+
+.footer-container a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.footer-container a:hover {
+    text-decoration: underline;
+}
+
+.copyright {
+    margin-top: 25px;
+    font-size: 0.85rem;
+    opacity: 0.7;
+    border-top: 1px solid #333;
+    padding-top: 15px;
+}
