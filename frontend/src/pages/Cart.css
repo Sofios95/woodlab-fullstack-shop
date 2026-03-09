@@ -1,0 +1,168 @@
+/* Cart.css */
+
+.cart-page {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 20px;
+  animation: fadeIn 0.5s ease-in;
+}
+
+.cart-page h1 {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 40px;
+  font-family: 'Playfair Display', serif;
+}
+
+/* Άδειο Καλάθι */
+.cart-empty {
+  text-align: center;
+  margin-top: 100px;
+}
+
+.cart-empty h2 {
+  color: #7f8c8d;
+  margin-bottom: 20px;
+}
+
+.cart-empty a {
+  color: #a67c52;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.cart-empty a:hover {
+  color: #056e1cb7;
+}
+
+/* Λίστα Προϊόντων */
+.cart-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eee;
+}
+
+.cart-item img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-right: 20px;
+}
+
+.item-details {
+  flex: 1;
+}
+
+.item-details h3 {
+  margin-bottom: 5px;
+  color: #2c3e50;
+}
+
+.item-details p {
+  color: #7f8c8d;
+  font-weight: 600;
+}
+
+/* Έλεγχος Ποσότητας */
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.quantity-controls button {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid #a67c52;
+  background: white;
+  color: #a67c52;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s;
+}
+
+.quantity-controls button:hover {
+  background: #a67c52;
+  color: white;
+}
+
+.quantity-num {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.item-total {
+  font-size: 1.2rem;
+  color: #2c3e50;
+  min-width: 80px;
+  text-align: right;
+}
+
+/* Σύνολο & Checkout */
+.cart-summary {
+  margin-top: 40px;
+  padding: 30px;
+  background: white;
+  border-radius: 12px;
+  text-align: right;
+  box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.03);
+}
+
+.cart-summary h2 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+
+.checkout-btn {
+  background-color: #056e1cb7; /* Woodlab Green */
+  color: white;
+  border: none;
+  padding: 15px 40px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(5, 110, 28, 0.2);
+}
+
+.checkout-btn:hover {
+  background-color: #045a17;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(5, 110, 28, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .cart-item {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .cart-item img {
+    margin-right: 0;
+    margin-bottom: 15px;
+  }
+  
+  .item-total {
+    margin-top: 15px;
+    text-align: center;
+  }
+  
+  .quantity-controls {
+    justify-content: center;
+  }
+}

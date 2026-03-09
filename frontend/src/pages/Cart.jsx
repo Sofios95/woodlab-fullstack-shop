@@ -1,5 +1,6 @@
 import { useCart } from "../context/useCart";
 import { Link, useNavigate } from "react-router-dom";
+import "./Cart.css";
 
 function Cart() {
   const { cartItems, addToCart, removeFromCart, totalAmount } = useCart();

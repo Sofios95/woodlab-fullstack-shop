@@ -3,6 +3,8 @@ import axios from "axios";
 import { useCart } from '../context/useCart';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import './Home.css';
+
 
 function Home() {
   const [products, setProducts] = useState([]);

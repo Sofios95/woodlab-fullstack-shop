@@ -1,0 +1,124 @@
+/* Admin.css */
+
+.admin-page-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Tabs Navigation */
+.admin-nav-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.admin-tab-button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  background-color: #e0e0e0;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  color: #555;
+}
+
+.admin-tab-button.active {
+  background-color: #056e1cb7; /* Το Woodlab Green */
+  color: white;
+  box-shadow: 0 4px 10px rgba(5, 110, 28, 0.3);
+}
+
+/* Form Styles */
+.admin-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  border: 1px solid #eee;
+  margin-bottom: 40px;
+}
+
+.admin-form input, 
+.admin-form textarea {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.admin-form textarea {
+  grid-column: span 2;
+  height: 80px;
+}
+
+.save-btn {
+  background-color: #a67c52; /* Wood Brown */
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.save-btn:hover {
+  background-color: #8b6542;
+}
+
+/* Order & Product Cards */
+.admin-order-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+  padding: 20px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  border-left: 6px solid #ccc;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transition: transform 0.2s;
+}
+
+.admin-order-card:hover {
+  transform: translateY(-3px);
+}
+
+.admin-order-id {
+  font-weight: 800;
+  color: #2c3e50;
+  font-size: 1.1rem;
+  display: block;
+}
+
+.edit-btn-small {
+  padding: 8px 16px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+
+.edit-btn-small:hover {
+  opacity: 0.9;
+}
+
+/* Animations */
+.admin-content-fade {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
