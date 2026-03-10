@@ -17,8 +17,14 @@ function Cart() {
   if (cartItems.length === 0) {
     return (
       <Container maxWidth="sm" sx={{ py: 10, textAlign: 'center' }}>
-        <Typography variant="h5" sx={{ mb: 3, color: "#4a3728" }}>Το καλάθι σου είναι άδειο! 🪵</Typography>
-        <Button variant="contained" onClick={() => navigate('/')} sx={{ bgcolor: "#4a3728" }}>
+        <Typography variant="h5" sx={{ mb: 3, color: "primary.main", fontWeight: 700 }}>
+          Το καλάθι σου είναι άδειο! 🪵
+        </Typography>
+        <Button 
+          variant="contained" 
+          onClick={() => navigate('/')} 
+          sx={{ bgcolor: "primary.main", "&:hover": { bgcolor: "primary.light" } }}
+        >
           Επιστροφή στα Προϊόντα
         </Button>
       </Container>
@@ -27,48 +33,56 @@ function Cart() {
 
   return (
     <Container maxWidth="md" sx={{ py: 5 }}>
-      <Typography variant="h4" sx={{ mb: 4, fontWeight: 800, color: "#4a3728" }}>
+      <Typography variant="h4" sx={{ mb: 4, fontWeight: 800, color: "primary.main" }}>
         Το Καλάθι μου
       </Typography>
 
-      <Paper elevation={3} sx={{ borderRadius: 4, overflow: 'hidden' }}>
+      <Paper elevation={4} sx={{ borderRadius: 4, overflow: 'hidden', border: "1px solid #eee" }}>
         <List disablePadding>
           {cartItems.map((item) => (
             <React.Fragment key={item.id}>
               <ListItem sx={{ py: 3, px: { xs: 2, md: 4 } }}>
-                <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', gap: 2 }}>
+                <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', gap: 3 }}>
                   
-                  {/* Εικόνα Προϊόντος */}
+                  {/* Image */}
                   <Avatar 
                     src={item.image_url} 
                     variant="rounded" 
-                    sx={{ width: 80, height: 80, border: "1px solid #eee" }} 
+                    sx={{ width: 90, height: 90, boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }} 
                   />
 
-                  {/* Πληροφορίες & Controls (Αριστερά/Κέντρο) */}
+                  {/* Info & Controls */}
                   <Box sx={{ flexGrow: 1 }}>
-                    <Typography variant="h6" sx={{ fontWeight: 700, fontSize: '1.1rem' }}>
+                    <Typography variant="h6" sx={{ fontWeight: 700, color: "text.primary" }}>
                       {item.name}
                     </Typography>
                     
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                      Τιμή μονάδας: {item.price.toFixed(2)}€
+                    <Typography variant="body2" sx={{ color: "text.secondary", mb: 1.5 }}>
+                      Τιμή: {Number(item.price).toFixed(2)}€
                     </Typography>
 
                     <Stack direction="row" alignItems="center" spacing={1}>
-                      <IconButton size="small" onClick={() => removeFromCart(item.id)} sx={{ border: "1px solid #ddd" }}>
+                      <IconButton 
+                        size="small" 
+                        onClick={() => removeFromCart(item.id)} 
+                        sx={{ border: "1px solid", borderColor: "divider" }}
+                      >
                         <RemoveIcon fontSize="small" />
                       </IconButton>
-                      <Typography sx={{ px: 2, fontWeight: 'bold' }}>{item.quantity}</Typography>
-                      <IconButton size="small" onClick={() => addToCart(item)} sx={{ border: "1px solid #ddd" }}>
+                      <Typography sx={{ px: 2, fontWeight: 800 }}>{item.quantity}</Typography>
+                      <IconButton 
+                        size="small" 
+                        onClick={() => addToCart(item)} 
+                        sx={{ border: "1px solid", borderColor: "divider" }}
+                      >
                         <AddIcon fontSize="small" />
                       </IconButton>
                     </Stack>
                   </Box>
 
-                  {/* Σύνολο Προϊόντος (Δεξιά) - Εδώ διορθώθηκε το overlap */}
-                  <Box sx={{ textAlign: 'right', minWidth: '100px' }}>
-                    <Typography variant="h6" sx={{ fontWeight: 800, color: "#4a3728" }}>
+                  {/* Price Label - No Overlap */}
+                  <Box sx={{ textAlign: 'right', minWidth: '110px' }}>
+                    <Typography variant="h6" sx={{ fontWeight: 900, color: "primary.main" }}>
                       {(item.price * item.quantity).toFixed(2)}€
                     </Typography>
                   </Box>
@@ -80,14 +94,25 @@ function Cart() {
           ))}
         </List>
 
-        {/* Footer Καλαθιού */}
-        <Box sx={{ p: 4, bgcolor: "#fdfbf9", display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 2 }}>
-          <Typography variant="h5" sx={{ fontWeight: 800 }}>
-            Σύνολο: {totalAmount.toFixed(2)}€
+        {/* Footer */}
+        <Box sx={{ 
+          p: 4, 
+          bgcolor: "background.default", 
+          display: 'flex', 
+          flexDirection: 'column', 
+          alignItems: 'flex-end', 
+          gap: 2 
+        }}>
+          <Typography variant="h5" sx={{ fontWeight: 900, color: "primary.dark" }}>
+            Σύνολο: {Number(totalAmount).toFixed(2)}€
           </Typography>
           
           <Stack direction="row" spacing={2}>
-            <Button color="error" onClick={clearCart} startIcon={<DeleteIcon />}>
+            <Button 
+              sx={{ color: "error.main", fontWeight: 600 }} 
+              onClick={clearCart} 
+              startIcon={<DeleteIcon />}
+            >
               Καθαρισμός
             </Button>
             <Button 
@@ -95,7 +120,13 @@ function Cart() {
               size="large"
               startIcon={<ShoppingCartCheckoutIcon />}
               onClick={() => navigate('/checkout')}
-              sx={{ bgcolor: "#4a3728", px: 4, py: 1.5, "&:hover": { bgcolor: "#a67c52" } }}
+              sx={{ 
+                bgcolor: "primary.main", 
+                px: 5, 
+                py: 1.5, 
+                borderRadius: "10px",
+                "&:hover": { bgcolor: "primary.light" } 
+              }}
             >
               ΟΛΟΚΛΗΡΩΣΗ
             </Button>
