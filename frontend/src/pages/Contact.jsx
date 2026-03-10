@@ -1,146 +1,115 @@
 import React from "react";
 import { 
-  Container, Typography, Box, Paper, Grid, Link, Divider 
+  Container, Typography, Box, Paper, Grid, Link, Stack 
 } from "@mui/material";
 import EmailIcon from "@mui/icons-material/Email";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
 
 function Contact() {
+  // Εδώ βάζουμε τη διεύθυνση για τον χάρτη (URL Encoded)
+  const mapAddress = encodeURIComponent("Μαβίλη 1, Ηλιούπολη, 16345");
+  const mapUrl = `https://maps.google.com/maps?q=${mapAddress}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+
   return (
-    <Container maxWidth="lg" sx={{ py: { xs: 4, md: 10 } }}>
+    <Container maxWidth="md" sx={{ py: 5 }}>
       <Paper 
-        elevation={6} 
+        elevation={3} 
         sx={{ 
-          p: { xs: 3, md: 8 }, 
-          borderRadius: 4, 
-          bgcolor: "#fffcf9", // Πολύ ελαφρύ κρέμ για "ξύλινη" αίσθηση
-          border: "1px solid #f0e6dd"
+          p: { xs: 2, md: 4 }, 
+          borderRadius: 3, 
+          bgcolor: "#fffcf9",
+          border: "1px solid #f0e6dd" 
         }}
       >
-        <Grid container spacing={6} alignItems="center">
-          
-          {/* Αριστερή πλευρά: Τίτλος & Πληροφορίες */}
-          <Grid item xs={12} md={6}>
-            <Typography 
-              variant="h3" 
-              gutterBottom 
-              sx={{ 
-                fontWeight: 800, 
-                color: "#4a3728",
-                fontSize: { xs: "2rem", md: "3rem" } 
-              }}
-            >
-              Επικοινωνήστε μαζί μας
-            </Typography>
-            
-            <Box sx={{ width: "80px", height: "5px", bgcolor: "#a67c52", mb: 4 }} />
-            
-            <Typography variant="body1" sx={{ color: "#5d4037", mb: 5, fontSize: "1.1rem" }}>
-              Είμαστε εδώ για να λύσουμε κάθε απορία σας σχετικά με τις ξύλινες κατασκευές μας. 
-              Μη διστάσετε να μας καλέσετε ή να μας στείλετε email.
-            </Typography>
+        <Typography variant="h4" align="center" sx={{ fontWeight: 800, color: "#4a3728", mb: 1 }}>
+          Επικοινωνία
+        </Typography>
+        <Box sx={{ width: "40px", height: "3px", bgcolor: "#a67c52", mx: "auto", mb: 4 }} />
 
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
-              
+        <Grid container spacing={3} alignItems="stretch">
+          
+          {/* Αριστερή Στήλη: Πληροφορίες - Πιο "μαζεμένες" */}
+          <Grid item xs={12} md={5}>
+            <Stack spacing={2.5} sx={{ height: '100%', justifyContent: 'center' }}>
               <ContactItem 
-                icon={<EmailIcon sx={{ color: "#fff" }} />} 
+                icon={<EmailIcon fontSize="small" sx={{ color: "#fff" }} />} 
                 title="Email" 
                 content="info@woodlab.gr" 
                 link="mailto:info@woodlab.gr"
               />
-
               <ContactItem 
-                icon={<LocationOnIcon sx={{ color: "#fff" }} />} 
+                icon={<LocationOnIcon fontSize="small" sx={{ color: "#fff" }} />} 
                 title="Διεύθυνση" 
                 content="Μαβίλη 1, Ηλιούπολη, 16345" 
               />
-
               <ContactItem 
-                icon={<PhoneIphoneIcon sx={{ color: "#fff" }} />} 
-                title="Τηλέφωνα Επικοινωνίας" 
+                icon={<PhoneIphoneIcon fontSize="small" sx={{ color: "#fff" }} />} 
+                title="Τηλέφωνα" 
                 content={
-                  <>
-                    <Box sx={{ fontWeight: 600 }}>6945663004 (Στέλιος)</Box>
-                    <Box sx={{ fontWeight: 600 }}>6946548303 (Μάριος)</Box>
-                  </>
+                  <Box sx={{ lineHeight: 1.4 }}>
+                    6945663004 (Στέλιος) <br />
+                    6946548303 (Μάριος)
+                  </Box>
                 } 
               />
-            </Box>
+            </Stack>
           </Grid>
 
-          {/* Δεξιά πλευρά: Χάρτης */}
-          <Grid item xs={12} md={6}>
+          {/* Δεξιά Στήλη: Χάρτης */}
+          <Grid item xs={12} md={7}>
             <Box 
               sx={{ 
-                borderRadius: 4, 
+                borderRadius: 2, 
                 overflow: "hidden", 
-                boxShadow: "0px 10px 30px rgba(0,0,0,0.1)",
-                height: { xs: "300px", md: "450px" },
-                border: "4px solid #fff"
+                height: "300px", 
+                border: "1px solid #ddd",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.05)"
               }}
             >
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3146.54321!2d23.754321!3d37.9321!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzfCsDU1JzU1LjYiTiAyM8KwNDUnMTUuNiJF!5e0!3m2!1sel!2sgr!4v1620000000000!5m2!1sel!2sgr"
+                title="Woodlab Location"
                 width="100%"
                 height="100%"
+                frameBorder="0"
                 style={{ border: 0 }}
-                allowFullScreen=""
-                loading="lazy"
-                title="WoodLab Location"
+                src={mapUrl}
+                allowFullScreen
               ></iframe>
             </Box>
           </Grid>
-
         </Grid>
       </Paper>
     </Container>
   );
 }
 
-// Helper Component για τις πληροφορίες
+// Μικρότερο και πιο κομψό Item
 function ContactItem({ icon, title, content, link }) {
   return (
-    <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
-      <Box 
-        sx={{ 
-          bgcolor: "#4a3728", 
-          p: 1.5, 
-          borderRadius: "50%", 
-          display: "flex",
-          boxShadow: "0px 4px 10px rgba(74, 55, 40, 0.3)" 
-        }}
-      >
+    <Box sx={{ display: "flex", alignItems: "flex-start", gap: 2 }}>
+      <Box sx={{ 
+        bgcolor: "#4a3728", 
+        minWidth: 36,
+        height: 36,
+        borderRadius: "10px", // Τετραγωνισμένο με στρογγυλές γωνίες αντί για κύκλο
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        mt: 0.5
+      }}>
         {icon}
       </Box>
       <Box>
-        <Typography 
-          variant="caption" 
-          sx={{ 
-            color: "#a67c52", 
-            fontWeight: 700, 
-            textTransform: "uppercase",
-            letterSpacing: 1
-          }}
-        >
+        <Typography variant="caption" sx={{ color: "#a67c52", fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.5 }}>
           {title}
         </Typography>
         {link ? (
-          <Link 
-            href={link} 
-            underline="none" 
-            sx={{ 
-              display: "block",
-              color: "#2c3e50", 
-              fontWeight: 600, 
-              fontSize: "1.1rem",
-              "&:hover": { color: "#a67c52" } 
-            }}
-          >
+          <Link href={link} underline="none" sx={{ display: "block", color: "#2c3e50", fontWeight: 600, fontSize: "0.95rem", "&:hover": { color: "#a67c52" } }}>
             {content}
           </Link>
         ) : (
-          <Typography variant="body1" sx={{ color: "#2c3e50", fontWeight: 600, fontSize: "1.1rem" }}>
+          <Typography variant="body2" sx={{ color: "#2c3e50", fontWeight: 600, fontSize: "0.95rem" }}>
             {content}
           </Typography>
         )}

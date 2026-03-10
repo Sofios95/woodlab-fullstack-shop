@@ -1,35 +1,25 @@
-import React from "react";
-import { useCart } from "../context/useCart";
-import { Link, useNavigate } from "react-router-dom";
+import React from 'react';
+import { useCart } from '../context/useCart';
+import { useNavigate } from 'react-router-dom';
 import { 
-  Container, Typography, Box, Button, Paper, 
-  List, ListItem, ListItemAvatar, Avatar, ListItemText, 
-  IconButton, Divider, Stack 
+  Container, Typography, Box, Paper, IconButton, Button, 
+  List, ListItem, Divider, Avatar, Stack 
 } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-import ShoppingBagOutlinedIcon from '@mui/icons-material/ShoppingBagOutlined';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
 
 function Cart() {
-  const { cartItems, addToCart, removeFromCart, totalAmount } = useCart();
+  const { cartItems, addToCart, removeFromCart, clearCart, totalAmount } = useCart();
   const navigate = useNavigate();
 
-  // Άδειο Καλάθι
   if (cartItems.length === 0) {
     return (
-      <Container maxWidth="sm" sx={{ py: 10, textAlign: "center" }}>
-        <ShoppingBagOutlinedIcon sx={{ fontSize: 80, color: "#ccc", mb: 2 }} />
-        <Typography variant="h5" gutterBottom sx={{ fontWeight: "bold" }}>
-          Το καλάθι σου είναι άδειο 🪵
-        </Typography>
-        <Button 
-          component={Link} 
-          to="/" 
-          startIcon={<ArrowBackIcon />}
-          sx={{ mt: 2, color: "#4a3728" }}
-        >
-          Πίσω στην αρχική
+      <Container maxWidth="sm" sx={{ py: 10, textAlign: 'center' }}>
+        <Typography variant="h5" sx={{ mb: 3, color: "#4a3728" }}>Το καλάθι σου είναι άδειο! 🪵</Typography>
+        <Button variant="contained" onClick={() => navigate('/')} sx={{ bgcolor: "#4a3728" }}>
+          Επιστροφή στα Προϊόντα
         </Button>
       </Container>
     );
@@ -37,116 +27,83 @@ function Cart() {
 
   return (
     <Container maxWidth="md" sx={{ py: 5 }}>
-      <Typography variant="h4" sx={{ mb: 4, fontWeight: "bold", color: "#2c3e50" }}>
+      <Typography variant="h4" sx={{ mb: 4, fontWeight: 800, color: "#4a3728" }}>
         Το Καλάθι μου
       </Typography>
 
-      <Grid container spacing={4}>
-        {/* Λίστα Προϊόντων */}
-        <Grid item xs={12} md={8}>
-          <Paper elevation={2} sx={{ borderRadius: 3, overflow: "hidden" }}>
-            <List sx={{ p: 0 }}>
-              {cartItems.map((item, index) => (
-                <React.Fragment key={item.id}>
-                  <ListItem 
-                    sx={{ py: 3, px: 2, display: { xs: "block", sm: "flex" } }}
-                    secondaryAction={
-                      <Typography variant="subtitle1" sx={{ fontWeight: "bold", display: {xs: "none", sm: "block"} }}>
-                        {(item.price * item.quantity).toFixed(2)}€
-                      </Typography>
-                    }
-                  >
-                    <ListItemAvatar sx={{ mb: { xs: 2, sm: 0 } }}>
-                      <Avatar 
-                        src={item.image_url} 
-                        variant="rounded" 
-                        sx={{ width: 80, height: 80, mr: 2, border: "1px solid #eee" }} 
-                      />
-                    </ListItemAvatar>
-                    
-                    <ListItemText
-                      primary={<Typography variant="h6" sx={{ fontSize: "1.1rem" }}>{item.name}</Typography>}
-                      secondary={
-                        <Box sx={{ mt: 1 }}>
-                          <Typography variant="body2" color="text.secondary">
-                            Τιμή μονάδας: {item.price}€
-                          </Typography>
-                          
-                          {/* Controls */}
-                          <Stack direction="row" alignItems="center" spacing={1} sx={{ mt: 1 }}>
-                            <IconButton 
-                              size="small" 
-                              onClick={() => removeFromCart(item.id)}
-                              sx={{ border: "1px solid #ddd" }}
-                            >
-                              <RemoveIcon fontSize="small" />
-                            </IconButton>
-                            <Typography sx={{ px: 1, fontWeight: "bold" }}>{item.quantity}</Typography>
-                            <IconButton 
-                              size="small" 
-                              onClick={() => addToCart(item)}
-                              sx={{ border: "1px solid #ddd" }}
-                            >
-                              <AddIcon fontSize="small" />
-                            </IconButton>
-                          </Stack>
-                        </Box>
-                      }
-                    />
-                    {/* Total για Mobile */}
-                    <Typography sx={{ display: { xs: "block", sm: "none" }, mt: 2, fontWeight: "bold", textAlign: "right" }}>
-                       {(item.price * item.quantity).toFixed(2)}€
-                    </Typography>
-                  </ListItem>
-                  {index < cartItems.length - 1 && <Divider />}
-                </React.Fragment>
-              ))}
-            </List>
-          </Paper>
-        </Grid>
+      <Paper elevation={3} sx={{ borderRadius: 4, overflow: 'hidden' }}>
+        <List disablePadding>
+          {cartItems.map((item) => (
+            <React.Fragment key={item.id}>
+              <ListItem sx={{ py: 3, px: { xs: 2, md: 4 } }}>
+                <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', gap: 2 }}>
+                  
+                  {/* Εικόνα Προϊόντος */}
+                  <Avatar 
+                    src={item.image_url} 
+                    variant="rounded" 
+                    sx={{ width: 80, height: 80, border: "1px solid #eee" }} 
+                  />
 
-        {/* Σύνολο & Checkout */}
-        <Grid item xs={12} md={4}>
-          <Paper elevation={4} sx={{ p: 3, borderRadius: 3, bgcolor: "#fdfbf9", border: "1px solid #f0e6dd" }}>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold" }}>
-              Σύνοψη Παραγγελίας
-            </Typography>
-            <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
-              <Typography color="text.secondary">Σύνολο:</Typography>
-              <Typography variant="h5" sx={{ fontWeight: "bold", color: "#4a3728" }}>
-                {totalAmount.toFixed(2)}€
-              </Typography>
-            </Box>
+                  {/* Πληροφορίες & Controls (Αριστερά/Κέντρο) */}
+                  <Box sx={{ flexGrow: 1 }}>
+                    <Typography variant="h6" sx={{ fontWeight: 700, fontSize: '1.1rem' }}>
+                      {item.name}
+                    </Typography>
+                    
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                      Τιμή μονάδας: {item.price.toFixed(2)}€
+                    </Typography>
+
+                    <Stack direction="row" alignItems="center" spacing={1}>
+                      <IconButton size="small" onClick={() => removeFromCart(item.id)} sx={{ border: "1px solid #ddd" }}>
+                        <RemoveIcon fontSize="small" />
+                      </IconButton>
+                      <Typography sx={{ px: 2, fontWeight: 'bold' }}>{item.quantity}</Typography>
+                      <IconButton size="small" onClick={() => addToCart(item)} sx={{ border: "1px solid #ddd" }}>
+                        <AddIcon fontSize="small" />
+                      </IconButton>
+                    </Stack>
+                  </Box>
+
+                  {/* Σύνολο Προϊόντος (Δεξιά) - Εδώ διορθώθηκε το overlap */}
+                  <Box sx={{ textAlign: 'right', minWidth: '100px' }}>
+                    <Typography variant="h6" sx={{ fontWeight: 800, color: "#4a3728" }}>
+                      {(item.price * item.quantity).toFixed(2)}€
+                    </Typography>
+                  </Box>
+
+                </Box>
+              </ListItem>
+              <Divider />
+            </React.Fragment>
+          ))}
+        </List>
+
+        {/* Footer Καλαθιού */}
+        <Box sx={{ p: 4, bgcolor: "#fdfbf9", display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 2 }}>
+          <Typography variant="h5" sx={{ fontWeight: 800 }}>
+            Σύνολο: {totalAmount.toFixed(2)}€
+          </Typography>
+          
+          <Stack direction="row" spacing={2}>
+            <Button color="error" onClick={clearCart} startIcon={<DeleteIcon />}>
+              Καθαρισμός
+            </Button>
             <Button 
               variant="contained" 
-              fullWidth 
               size="large"
-              onClick={() => navigate("/checkout")}
-              sx={{ 
-                bgcolor: "#4a3728", 
-                py: 1.5,
-                borderRadius: "12px",
-                "&:hover": { bgcolor: "#35281e" }
-              }}
+              startIcon={<ShoppingCartCheckoutIcon />}
+              onClick={() => navigate('/checkout')}
+              sx={{ bgcolor: "#4a3728", px: 4, py: 1.5, "&:hover": { bgcolor: "#a67c52" } }}
             >
-              Ολοκλήρωση
+              ΟΛΟΚΛΗΡΩΣΗ
             </Button>
-            <Button 
-              component={Link} 
-              to="/" 
-              fullWidth 
-              sx={{ mt: 2, color: "#7f8c8d", textTransform: "none" }}
-            >
-              Συνέχεια Αγορών
-            </Button>
-          </Paper>
-        </Grid>
-      </Grid>
+          </Stack>
+        </Box>
+      </Paper>
     </Container>
   );
 }
-
-// Χρειαζόμαστε και το Grid από το MUI, οπότε πρόσθεσέ το στο import
-import { Grid } from "@mui/material";
 
 export default Cart;
