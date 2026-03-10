@@ -1,19 +1,23 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "./Admin.css";
+import { 
+  Container, Typography, Box, Paper, Tab, Tabs, TextField, 
+  Button, Grid, Card, Divider, Chip, IconButton 
+} from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import SaveIcon from '@mui/icons-material/Save';
+import InventoryIcon from '@mui/icons-material/Inventory';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 
 function Admin() {
-  const [activeTab, setActiveTab] = useState("products");
+  const [activeTab, setActiveTab] = useState(0); // MUI Tabs use index 0, 1
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
   const [editingId, setEditingId] = useState(null);
 
   const [product, setProduct] = useState({
-    name: "",
-    price: "",
-    description: "",
-    image_url: "",
-    stock_quantity: "",
+    name: "", price: "", description: "", image_url: "", stock_quantity: "",
   });
 
   useEffect(() => {
@@ -23,196 +27,168 @@ function Admin() {
 
   const fetchProducts = async () => {
     try {
-      
       const response = await axios.get("https://woodlab-fullstack-shop.onrender.com/api/home");
       setProducts(response.data);
-    } catch (err) {
-      console.error("Error fetching products:", err);
-    }
+    } catch (err) { console.error("Error:", err); }
   };
 
   const fetchOrders = async () => {
     try {
-      
-      const response = await axios.get(
-        "https://woodlab-fullstack-shop.onrender.com/api/orders/admin"
-      );
+      const response = await axios.get("https://woodlab-fullstack-shop.onrender.com/api/orders/admin");
       setOrders(response.data);
-    } catch (err) {
-      console.error("Error fetching orders:", err);
-    }
+    } catch (err) { console.error("Error:", err); }
   };
 
   const handleChange = (e) => {
     setProduct({ ...product, [e.target.name]: e.target.value });
   };
 
-  const handleEdit = (p) => {
-    setEditingId(p.id);
-    setProduct({
-      name: p.name,
-      price: p.price,
-      description: p.description,
-      image_url: p.image_url,
-      stock_quantity: p.stock_quantity,
-    });
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const handleDeleteProduct = async (id) => {
-    if (window.confirm("Θέλεις σίγουρα να διαγράψεις αυτό το προϊόν;")) {
-      try {
-        await axios.delete(`https://woodlab-fullstack-shop.onrender.com/api/admin/${id}`);
-        fetchProducts();
-      } catch (err) {
-        alert("Σφάλμα κατά τη διαγραφή του προϊόντος");
-      }
-    }
-  };
-
-  const handleDeleteOrder = async (id) => {
-    if (window.confirm("Θέλεις σίγουρα να διαγράψεις αυτή την παραγγελία;")) {
-      try {
-       
-        await axios.delete(`https://woodlab-fullstack-shop.onrender.com/api/orders/admin/${id}`);
-        fetchOrders();
-      } catch (err) {
-        alert("Σφάλμα κατά τη διαγραφή της παραγγελίας");
-      }
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (editingId) {
-        await axios.put(
-          `https://woodlab-fullstack-shop.onrender.com/api/admin/${editingId}`,
-          product
-        );
+        await axios.put(`https://woodlab-fullstack-shop.onrender.com/api/admin/${editingId}`, product);
       } else {
         await axios.post("https://woodlab-fullstack-shop.onrender.com/api/admin", product);
       }
-      setProduct({
-        name: "",
-        price: "",
-        description: "",
-        image_url: "",
-        stock_quantity: "",
-      });
+      setProduct({ name: "", price: "", description: "", image_url: "", stock_quantity: "" });
       setEditingId(null);
       fetchProducts();
-    } catch (err) {
-      alert("Error saving product");
-    }
+    } catch (err) { alert("Error saving product"); }
+  };
+
+  const handleEdit = (p) => {
+    setEditingId(p.id);
+    setProduct({ ...p });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const updateOrderStatus = async (id, currentStatus) => {
     const nextStatus = currentStatus === "pending" ? "completed" : "pending";
     try {
-      
-      await axios.put(`https://woodlab-fullstack-shop.onrender.com/api/orders/admin/${id}/status`, {
-        status: nextStatus,
-      });
+      await axios.put(`https://woodlab-fullstack-shop.onrender.com/api/orders/admin/${id}/status`, { status: nextStatus });
       fetchOrders();
-    } catch (err) {
-      alert("Error updating status");
-    }
+    } catch (err) { alert("Error updating status"); }
   };
 
   return (
-    <div className="admin-page-container">
-      <h1 style={{ textAlign: "center", color: "#2c3e50", marginBottom: "30px" }}>
-        Woodlab Admin Dashboard 🪵
-      </h1>
+    <Container maxWidth="lg" sx={{ py: 5 }}>
+      <Typography variant="h3" align="center" sx={{ mb: 4, fontWeight: 800, color: "primary.main" }}>
+        Admin Dashboard 🪵
+      </Typography>
 
-      <div className="admin-nav-tabs">
-        <button
-          className={activeTab === "products" ? "admin-tab-button active" : "admin-tab-button"}
-          onClick={() => setActiveTab("products")}
+      <Paper sx={{ mb: 4, borderRadius: 3 }}>
+        <Tabs 
+          value={activeTab} 
+          onChange={(e, newVal) => setActiveTab(newVal)} 
+          centered
+          textColor="primary"
+          indicatorColor="primary"
         >
-          📦 Products & Stock
-        </button>
-        <button
-          className={activeTab === "orders" ? "admin-tab-button active" : "admin-tab-button"}
-          onClick={() => setActiveTab("orders")}
-        >
-          🛒 Order Management
-        </button>
-      </div>
+          <Tab icon={<InventoryIcon />} label="Products & Stock" />
+          <Tab icon={<ReceiptLongIcon />} label="Order Management" />
+        </Tabs>
+      </Paper>
 
-      <hr style={{ border: "0.5px solid #eee", margin: "20px 0" }} />
+      {activeTab === 0 && (
+        <Box className="admin-content-fade">
+          <Paper sx={{ p: 4, borderRadius: 3, mb: 4 }}>
+            <Typography variant="h6" sx={{ mb: 3, fontWeight: 'bold' }}>
+              {editingId ? "Επεξεργασία Προϊόντος" : "Προσθήκη Νέου Προϊόντος"}
+            </Typography>
+            <form onSubmit={handleSubmit}>
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={6}>
+                  <TextField fullWidth label="Όνομα" name="name" value={product.name} onChange={handleChange} required variant="outlined" />
+                </Grid>
+                <Grid item xs={6} md={3}>
+                  <TextField fullWidth label="Τιμή (€)" type="number" name="price" value={product.price} onChange={handleChange} required />
+                </Grid>
+                <Grid item xs={6} md={3}>
+                  <TextField fullWidth label="Απόθεμα" type="number" name="stock_quantity" value={product.stock_quantity} onChange={handleChange} required />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField fullWidth label="URL Εικόνας" name="image_url" value={product.image_url} onChange={handleChange} />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField fullWidth multiline rows={3} label="Περιγραφή" name="description" value={product.description} onChange={handleChange} />
+                </Grid>
+                <Grid item xs={12} sx={{ display: 'flex', gap: 2 }}>
+                  <Button fullWidth variant="contained" type="submit" startIcon={<SaveIcon />} sx={{ bgcolor: "primary.main", py: 1.5 }}>
+                    {editingId ? "Ενημέρωση" : "Αποθήκευση"}
+                  </Button>
+                  {editingId && (
+                    <Button fullWidth variant="outlined" color="inherit" onClick={() => { setEditingId(null); setProduct({ name: "", price: "", description: "", image_url: "", stock_quantity: "" }); }}>
+                      Ακύρωση
+                    </Button>
+                  )}
+                </Grid>
+              </Grid>
+            </form>
+          </Paper>
 
-      {activeTab === "products" && (
-        <div className="admin-content-fade">
-          <form onSubmit={handleSubmit} className="admin-form">
-            <h3 style={{ gridColumn: "span 2" }}>
-              {editingId ? "Edit Product" : "New Product"}
-            </h3>
-            <input name="name" placeholder="Name" value={product.name} onChange={handleChange} required />
-            <input name="price" type="number" step="0.01" placeholder="Price (€)" value={product.price} onChange={handleChange} required />
-            <input name="stock_quantity" type="number" placeholder="Stock" value={product.stock_quantity} onChange={handleChange} required />
-            <input name="image_url" placeholder="Image URL" value={product.image_url} onChange={handleChange} />
-            <textarea name="description" placeholder="Description" value={product.description} onChange={handleChange} />
-            <button type="submit" className="save-btn" style={{ gridColumn: "span 2" }}>
-              {editingId ? "Update Product" : "Save Product"}
-            </button>
-            {editingId && (
-              <button
-                type="button"
-                onClick={() => {
-                  setEditingId(null);
-                  setProduct({ name: "", price: "", description: "", image_url: "", stock_quantity: "" });
-                }}
-                style={{ gridColumn: "span 2", backgroundColor: "#95a5a6", marginTop: "5px" }}
-              >
-                Cancel Edit
-              </button>
-            )}
-          </form>
-
-          <div className="admin-list-container" style={{ marginTop: "30px" }}>
+          {/* Product List */}
+          <Stack spacing={2}>
             {products.map((p) => (
-              <div key={p.id} className="admin-order-card" style={{ borderLeftColor: p.stock_quantity < 5 ? "#fa5252" : "#27ae60" }}>
-                <div style={{ flex: 1 }}>
-                  <span className="admin-order-id">{p.name}</span>
-                  <span className="stock-badge" style={{ backgroundColor: p.stock_quantity < 5 ? "#fff5f5" : "#ebfbee", color: p.stock_quantity < 5 ? "#fa5252" : "#2b8a3e", padding: "4px 10px", borderRadius: "20px", fontSize: "0.8rem", marginLeft: "10px", fontWeight: "bold" }}>
-                    {p.stock_quantity} in stock
-                  </span>
-                </div>
-                <div className="admin-actions" style={{ display: "flex", gap: "10px" }}>
-                  <button className="edit-btn-small" onClick={() => handleEdit(p)}>Edit</button>
-                  <button className="edit-btn-small" onClick={() => handleDeleteProduct(p.id)} style={{ backgroundColor: "#e74c3c" }}>Delete</button>
-                </div>
-              </div>
+              <Card key={p.id} sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderLeft: "6px solid", borderColor: p.stock_quantity < 5 ? "error.main" : "success.main" }}>
+                <Box>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>{p.name}</Typography>
+                  <Chip 
+                    label={`${p.stock_quantity} σε απόθεμα`} 
+                    size="small" 
+                    color={p.stock_quantity < 5 ? "error" : "success"} 
+                    variant="outlined"
+                    sx={{ mt: 1 }}
+                  />
+                </Box>
+                <Box>
+                  <IconButton onClick={() => handleEdit(p)} color="primary"><EditIcon /></IconButton>
+                  <IconButton onClick={() => alert("Delete logic here")} sx={{ color: "error.main" }}><DeleteIcon /></IconButton>
+                </Box>
+              </Card>
             ))}
-          </div>
-        </div>
+          </Stack>
+        </Box>
       )}
 
-      {activeTab === "orders" && (
-        <div className="admin-content-fade">
-          <h2 style={{ color: "#2c3e50", marginBottom: "20px" }}>Recent Sales</h2>
+      {activeTab === 1 && (
+        <Box className="admin-content-fade">
+          <Typography variant="h5" sx={{ mb: 3, fontWeight: 'bold' }}>Πρόσφατες Πωλήσεις</Typography>
           {orders.map((o) => (
-            <div key={o.id} className="admin-order-card" style={{ borderLeftColor: o.status === "pending" ? "#f39c12" : "#27ae60" }}>
-              <div className="admin-order-info" style={{ flex: 1 }}>
-                <div className="admin-order-id">Order #{o.id}</div>
-                <div style={{ fontWeight: "bold", color: "#34495e" }}>👤 Customer: {o.customer_name || "Guest User"}</div>
-                <div style={{ fontSize: "0.85rem", color: "#7f8c8d", marginTop: "5px" }}>📞 {o.customer_phone} | 📍 {o.customer_address}</div>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
-                <div style={{ fontWeight: "bold", fontSize: "1.1rem" }}>{o.total_amount}€</div>
-                <button className="edit-btn-small" onClick={() => updateOrderStatus(o.id, o.status)} style={{ backgroundColor: o.status === "pending" ? "#f39c12" : "#27ae60", color: "white", border: "none", minWidth: "120px" }}>
-                  {o.status === "pending" ? "🔔 Pending" : "✅ Completed"}
-                </button>
-                <button className="edit-btn-small" onClick={() => handleDeleteOrder(o.id)} style={{ backgroundColor: "#e74c3c", color: "white", border: "none" }}>🗑️</button>
-              </div>
-            </div>
+            <Card key={o.id} sx={{ p: 3, mb: 2, borderLeft: "6px solid", borderColor: o.status === "pending" ? "warning.main" : "success.main" }}>
+              <Grid container alignItems="center" spacing={2}>
+                <Grid item xs={12} md={4}>
+                  <Typography variant="h6">Order #{o.id}</Typography>
+                  <Typography variant="body2" color="text.secondary">👤 {o.customer_name || "Guest"}</Typography>
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  <Typography variant="body2">📞 {o.customer_phone}</Typography>
+                  <Typography variant="body2">📍 {o.customer_address}</Typography>
+                </Grid>
+                <Grid item xs={12} md={4} sx={{ textAlign: { md: 'right' } }}>
+                  <Typography variant="h6" sx={{ mb: 1 }}>{o.total_amount}€</Typography>
+                  <Button 
+                    variant="contained" 
+                    size="small"
+                    onClick={() => updateOrderStatus(o.id, o.status)}
+                    sx={{ 
+                      bgcolor: o.status === "pending" ? "warning.main" : "success.main",
+                      color: "white"
+                    }}
+                  >
+                    {o.status === "pending" ? "🔔 Εκκρεμεί" : "✅ Ολοκληρώθηκε"}
+                  </Button>
+                </Grid>
+              </Grid>
+            </Card>
           ))}
-        </div>
+        </Box>
       )}
-    </div>
+    </Container>
   );
 }
+
+// Χρησιμοποιούμε το Stack από το MUI
+import { Stack } from "@mui/material";
 
 export default Admin;

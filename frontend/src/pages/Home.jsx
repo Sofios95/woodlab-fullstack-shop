@@ -46,7 +46,7 @@ function Home() {
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', gap: 2 }}>
         <CircularProgress sx={{ color: "#a67c52" }} size={60} />
         <Typography variant="h6" sx={{ color: "#4a3728" }}>
-          Φορτώνουμε τα ξύλινα αριστουργήματα... 🪵
+          Loading... 🪵
         </Typography>
       </Box>
     );
