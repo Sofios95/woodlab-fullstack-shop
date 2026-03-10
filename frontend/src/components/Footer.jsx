@@ -15,6 +15,7 @@ function Footer() {
         >
           Facebook
         </a>
+        <br />
         <a
           href="https://www.instagram.com/woodlabgr/"
           target="_blank"
@@ -22,9 +23,11 @@ function Footer() {
         >
           Instagram
         </a>
+        <br />
         <a href="https://woodlab.gr/" target="_blank" rel="noopener noreferrer">
           Woodlab®
         </a>
+        <br />
       </div>
 
       <Link to="/aboutus" className="about-link">
