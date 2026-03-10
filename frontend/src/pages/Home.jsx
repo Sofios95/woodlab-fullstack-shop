@@ -1,15 +1,18 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useCart } from '../context/useCart';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import './Home.css';
-
+import { 
+  Container, Typography, Box, Grid, Card, CardMedia, 
+  CardContent, CardActions, Button, CircularProgress, Alert 
+} from "@mui/material";
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 
 function Home() {
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true); // Loader State
-  const [error, setError] = useState(null);    // Error State
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const { addToCart } = useCart(); 
 
   useEffect(() => {
@@ -22,7 +25,7 @@ function Home() {
         console.error("Error fetching products:", error);
         setError("Αποτυχία φόρτωσης προϊόντων. Δοκιμάστε ξανά αργότερα.");
       } finally {
-        setLoading(false); // Σταματάει ο loader ό,τι και να γίνει
+        setLoading(false);
       }
     }
     fetchData();
@@ -37,50 +40,116 @@ function Home() {
     });
   };
 
-  // 1. Εμφάνιση Loader όσο φορτώνει
+  // 1. Εμφάνιση Loader
   if (loading) {
     return (
-      <div className="loader-container">
-        <div className="spinner"></div> 
-        <p>Φορτώνουμε τα ξύλινα αριστουργήματα... 🪵</p>
-      </div>
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', gap: 2 }}>
+        <CircularProgress sx={{ color: "#a67c52" }} size={60} />
+        <Typography variant="h6" sx={{ color: "#4a3728" }}>
+          Φορτώνουμε τα ξύλινα αριστουργήματα... 🪵
+        </Typography>
+      </Box>
     );
   }
 
-  // 2. Εμφάνιση Error αν κάτι πάει στραβά
+  // 2. Εμφάνιση Error
   if (error) {
-    return <div className="error-message">{error}</div>;
+    return (
+      <Container sx={{ py: 10 }}>
+        <Alert severity="error" variant="filled" sx={{ borderRadius: 2 }}>
+          {error}
+        </Alert>
+      </Container>
+    );
   }
 
   return (
-    <div className="home-main">
+    <Box sx={{ bgcolor: "#fdfbf9", minHeight: "100vh" }}>
       <ToastContainer />
 
-      <div className="home-header">
-        <h1>Welcome</h1>
-        <h2>Check out our new E-shop</h2>
-      </div>
+      {/* Hero Section / Header */}
+      <Box sx={{ 
+        bgcolor: "#4a3728", 
+        color: "white", 
+        py: { xs: 6, md: 10 }, 
+        textAlign: "center",
+        mb: 6,
+        backgroundImage: 'linear-gradient(rgba(74, 55, 40, 0.8), rgba(74, 55, 40, 0.8)), url("https://woodlab.gr/wp-content/uploads/2022/05/WoodLab_Background.jpg")',
+        backgroundSize: "cover",
+        backgroundPosition: "center"
+      }}>
+        <Typography variant="h2" sx={{ fontWeight: 800, mb: 2, fontSize: { xs: '2.5rem', md: '4rem' } }}>
+          Welcome
+        </Typography>
+        <Typography variant="h5" sx={{ fontWeight: 300, opacity: 0.9 }}>
+          Check out our new E-shop
+        </Typography>
+      </Box>
 
-      <div className="product-grid">
-        {products.length > 0 ? (
-          products.map((p) => (
-            <div key={p.id} className="product-card">
-              <img src={p.image_url} alt={p.name} />
-              <div className="product-info">
-                <h3>{p.name}</h3>
-                <p>{p.description}</p>
-                <div className="price-tag">{p.price}€</div>
-                <button className="about-btn" onClick={() => handleAddToCart(p)}>
-                  ADD TO CART
-                </button>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p>Δεν βρέθηκαν προϊόντα.</p>
-        )}
-      </div>
-    </div>
+      <Container maxWidth="lg" sx={{ pb: 10 }}>
+        <Grid container spacing={4}>
+          {products.length > 0 ? (
+            products.map((p) => (
+              <Grid item key={p.id} xs={12} sm={6} md={4}>
+                <Card 
+                  elevation={2}
+                  sx={{ 
+                    height: '100%', 
+                    display: 'flex', 
+                    flexDirection: 'column',
+                    borderRadius: 4,
+                    transition: "transform 0.3s, box-shadow 0.3s",
+                    "&:hover": {
+                      transform: "translateY(-8px)",
+                      boxShadow: "0 12px 30px rgba(0,0,0,0.12)"
+                    }
+                  }}
+                >
+                  <CardMedia
+                    component="img"
+                    height="240"
+                    image={p.image_url}
+                    alt={p.name}
+                    sx={{ objectFit: "cover" }}
+                  />
+                  <CardContent sx={{ flexGrow: 1, p: 3 }}>
+                    <Typography gutterBottom variant="h5" component="h2" sx={{ fontWeight: 'bold', color: "#2c3e50" }}>
+                      {p.name}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2, minHeight: '40px' }}>
+                      {p.description}
+                    </Typography>
+                    <Typography variant="h6" sx={{ color: "#a67c52", fontWeight: 800 }}>
+                      {p.price}€
+                    </Typography>
+                  </CardContent>
+                  <CardActions sx={{ p: 2, pt: 0 }}>
+                    <Button 
+                      fullWidth 
+                      variant="contained" 
+                      startIcon={<AddShoppingCartIcon />}
+                      onClick={() => handleAddToCart(p)}
+                      sx={{ 
+                        bgcolor: "#4a3728", 
+                        py: 1.2,
+                        borderRadius: 2,
+                        "&:hover": { bgcolor: "#a67c52" }
+                      }}
+                    >
+                      ADD TO CART
+                    </Button>
+                  </CardActions>
+                </Card>
+              </Grid>
+            ))
+          ) : (
+            <Grid item xs={12}>
+              <Typography variant="h6" align="center">Δεν βρέθηκαν προϊόντα.</Typography>
+            </Grid>
+          )}
+        </Grid>
+      </Container>
+    </Box>
   );
 }
 

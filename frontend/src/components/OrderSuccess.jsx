@@ -1,6 +1,10 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import './OrderSuccess.css';
+import { 
+  Container, Typography, Box, Paper, Button, Divider 
+} from "@mui/material";
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import HomeIcon from '@mui/icons-material/Home';
 
 function OrderSuccess() {
   const navigate = useNavigate();
@@ -9,26 +13,69 @@ function OrderSuccess() {
   const orderId = location.state?.orderId || "N/A";
 
   return (
-    <div className="success-container">
-      <div className="success-card">
-        <div className="success-icon">
-          <span role="img" aria-label="success">✅</span>
-        </div>
-        <h1>Η παραγγελία ολοκληρώθηκε!</h1>
-        <p>Ευχαριστούμε για την εμπιστοσύνη σας στο <strong>Woodlab</strong>.</p>
+    <Container maxWidth="sm" sx={{ py: { xs: 8, md: 12 } }}>
+      <Paper 
+        elevation={6} 
+        sx={{ 
+          p: { xs: 4, md: 6 }, 
+          textAlign: 'center', 
+          borderRadius: 4,
+          borderTop: "8px solid #4caf50" // Πράσινη γραμμή επιτυχίας
+        }}
+      >
+        <CheckCircleOutlineIcon sx={{ fontSize: 80, color: "#4caf50", mb: 2 }} />
         
-        <div className="order-info">
-          <span>Αριθμός Παραγγελίας:</span>
-          <strong> #{orderId}</strong>
-        </div>
+        <Typography variant="h4" sx={{ fontWeight: 'bold', color: "#2c3e50", mb: 2 }}>
+          Η παραγγελία ολοκληρώθηκε!
+        </Typography>
         
-        <p className="success-msg">Θα λάβετε σύντομα email με τις λεπτομέρειες της αποστολής.</p>
-        
-        <button className="back-home-btn" onClick={() => navigate('/')}>
+        <Typography variant="body1" sx={{ color: "#5d4037", mb: 4 }}>
+          Ευχαριστούμε για την εμπιστοσύνη σας στο <strong>Woodlab</strong>.
+        </Typography>
+
+        <Box 
+          sx={{ 
+            bgcolor: "#f9f9f9", 
+            p: 3, 
+            borderRadius: 2, 
+            mb: 4, 
+            display: 'flex', 
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            border: "1px dashed #ccc"
+          }}
+        >
+          <Typography variant="subtitle1" sx={{ color: "#7f8c8d" }}>
+            Αριθμός Παραγγελίας:
+          </Typography>
+          <Typography variant="h6" sx={{ fontWeight: 'bold', color: "#4a3728" }}>
+            #{orderId}
+          </Typography>
+        </Box>
+
+        <Typography variant="body2" sx={{ color: "#7f8c8d", mb: 4 }}>
+          Θα λάβετε σύντομα email με τις λεπτομέρειες της αποστολής και την επιβεβαίωση των στοιχείων σας.
+        </Typography>
+
+        <Divider sx={{ mb: 4 }} />
+
+        <Button 
+          variant="contained" 
+          size="large"
+          startIcon={<HomeIcon />}
+          onClick={() => navigate('/')}
+          sx={{ 
+            bgcolor: "#4a3728", 
+            px: 4, 
+            py: 1.5,
+            borderRadius: "30px",
+            "&:hover": { bgcolor: "#a67c52" }
+          }}
+        >
           Επιστροφή στο Κατάστημα
-        </button>
-      </div>
-    </div>
+        </Button>
+      </Paper>
+    </Container>
   );
 }
 

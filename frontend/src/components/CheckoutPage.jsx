@@ -2,8 +2,12 @@ import React, { useState } from 'react';
 import { useCart } from '../context/useCart'; 
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './CheckoutPage.css';
-
+import { 
+  Container, Typography, Box, Paper, Grid, TextField, 
+  Button, List, ListItem, ListItemText, Divider, Alert 
+} from "@mui/material";
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 
 function CheckoutPage() {
   const { cartItems, totalAmount, clearCart } = useCart();
@@ -22,7 +26,6 @@ function CheckoutPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     
     const orderData = {
       fullName: formData.fullName,
@@ -48,57 +51,144 @@ function CheckoutPage() {
 
   if (cartItems.length === 0) {
     return (
-      <div className="checkout-empty" style={{textAlign: 'center', padding: '50px'}}>
-        <h2>Το καλάθι σου είναι άδειο! 🪵</h2>
-        <button onClick={() => navigate('/')}>Επιστροφή στα Προϊόντα</button>
-      </div>
+      <Container maxWidth="sm" sx={{ py: 10, textAlign: 'center' }}>
+        <Typography variant="h4" gutterBottom>Το καλάθι σου είναι άδειο! 🪵</Typography>
+        <Button 
+          variant="contained" 
+          onClick={() => navigate('/')}
+          sx={{ mt: 2, bgcolor: "#4a3728", "&:hover": { bgcolor: "#a67c52" } }}
+        >
+          Επιστροφή στα Προϊόντα
+        </Button>
+      </Container>
     );
   }
 
   return (
-    <div className="checkout-page">
-      <h1 className="checkout-title">Ολοκλήρωση Παραγγελίας</h1>
-      <div className="checkout-container">
-        <div className="checkout-form-section">
-          <h3>Στοιχεία Αποστολής</h3>
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label>Ονοματεπώνυμο</label>
-              <input type="text" name="fullName" placeholder="π.χ. Γιάννης Παπαδόπουλος" required onChange={handleChange} />
-            </div>
-            <div className="form-group">
-              <label>Email</label>
-              <input type="email" name="email" placeholder="π.χ. example@mail.com" required onChange={handleChange} />
-            </div>
-            <div className="form-group">
-              <label>Διεύθυνση</label>
-              <input type="text" name="address" placeholder="π.χ. Αθηνάς 10, Αθήνα" required onChange={handleChange} />
-            </div>
-            <div className="form-group">
-              <label>Τηλέφωνο</label>
-              <input type="tel" name="phone" placeholder="π.χ. 6971234567" required onChange={handleChange} />
-            </div>
-            <button type="submit" className="confirm-btn">ΕΠΙΒΕΒΑΙΩΣΗ ΑΓΟΡΑΣ</button>
-          </form>
-        </div>
+    <Container maxWidth="lg" sx={{ py: 5 }}>
+      <Typography variant="h4" sx={{ mb: 4, fontWeight: 'bold', color: "#4a3728" }}>
+        Ολοκλήρωση Παραγγελίας
+      </Typography>
 
-        <div className="order-summary-section">
-          <h3>Η Παραγγελία σου</h3>
-          <div className="summary-list">
-            {cartItems.map(item => (
-              <div key={item.id} className="summary-item">
-                <span className="item-name">{item.name} <small>x{item.quantity}</small></span>
-                <span className="item-price">{(item.price * item.quantity).toFixed(2)}€</span>
-              </div>
-            ))}
-          </div>
-          <div className="total-row">
-            <span>Σύνολο:</span>
-            <span>{totalAmount.toFixed(2)}€</span>
-          </div>
-        </div>
-      </div>
-    </div>
+      <Grid container spacing={4}>
+        {/* Φόρμα Στοιχείων */}
+        <Grid item xs={12} md={7}>
+          <Paper elevation={3} sx={{ p: 4, borderRadius: 3 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 3, gap: 1 }}>
+              <LocalShippingIcon color="action" />
+              <Typography variant="h6">Στοιχεία Αποστολής</Typography>
+            </Box>
+            
+            <form onSubmit={handleSubmit}>
+              <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Ονοματεπώνυμο"
+                    name="fullName"
+                    variant="outlined"
+                    required
+                    onChange={handleChange}
+                    placeholder="π.χ. Γιάννης Παπαδόπουλος"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="Email"
+                    name="email"
+                    type="email"
+                    variant="outlined"
+                    required
+                    onChange={handleChange}
+                    placeholder="example@mail.com"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="Τηλέφωνο"
+                    name="phone"
+                    type="tel"
+                    variant="outlined"
+                    required
+                    onChange={handleChange}
+                    placeholder="6971234567"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Διεύθυνση"
+                    name="address"
+                    variant="outlined"
+                    required
+                    onChange={handleChange}
+                    placeholder="π.χ. Αθηνάς 10, Αθήνα"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Button 
+                    type="submit" 
+                    variant="contained" 
+                    fullWidth 
+                    size="large"
+                    sx={{ 
+                      py: 2, 
+                      mt: 2, 
+                      bgcolor: "#4a3728", 
+                      fontWeight: 'bold',
+                      fontSize: '1.1rem',
+                      borderRadius: 2,
+                      "&:hover": { bgcolor: "#2c1e14" }
+                    }}
+                  >
+                    ΕΠΙΒΕΒΑΙΩΣΗ ΑΓΟΡΑΣ
+                  </Button>
+                </Grid>
+              </Grid>
+            </form>
+          </Paper>
+        </Grid>
+
+        {/* Σύνοψη Παραγγελίας */}
+        <Grid item xs={12} md={5}>
+          <Paper elevation={3} sx={{ p: 4, borderRadius: 3, bgcolor: "#fdfbf9" }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 3, gap: 1 }}>
+              <ShoppingBasketIcon color="action" />
+              <Typography variant="h6">Η Παραγγελία σου</Typography>
+            </Box>
+            
+            <List disablePadding>
+              {cartItems.map((item) => (
+                <ListItem key={item.id} sx={{ py: 1.5, px: 0 }}>
+                  <ListItemText 
+                    primary={item.name} 
+                    secondary={`Ποσότητα: ${item.quantity}`} 
+                  />
+                  <Typography variant="body1" sx={{ fontWeight: 600 }}>
+                    {(item.price * item.quantity).toFixed(2)}€
+                  </Typography>
+                </ListItem>
+              ))}
+              
+              <Divider sx={{ my: 2 }} />
+              
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Σύνολο:</Typography>
+                <Typography variant="h5" sx={{ fontWeight: 'bold', color: "#4a3728" }}>
+                  {totalAmount.toFixed(2)}€
+                </Typography>
+              </Box>
+            </List>
+
+            <Alert severity="info" sx={{ mt: 4, bgcolor: "transparent", border: "1px solid #e3f2fd" }}>
+              Η πληρωμή γίνεται με αντικαταβολή κατά την παράδοση.
+            </Alert>
+          </Paper>
+        </Grid>
+      </Grid>
+    </Container>
   );
 }
 

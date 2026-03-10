@@ -1,44 +1,99 @@
 import React from "react";
-import { Link } from "react-router-dom"; 
-import "./Aboutus.css";
+import { Link } from "react-router-dom";
+import { 
+  Container, Typography, Box, Button, Paper, Divider 
+} from "@mui/material";
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 function Aboutus() {
   return (
-    <div className="about-container">
-      <div className="about-hero">
-        <img
-          src="https://woodlab.gr/wp-content/uploads/2022/05/WoodLab_Background.jpg"
-          alt="WoodLab Workshop"
-        />
-      </div>
+    <Box>
+      {/* Hero Section με Background Image */}
+      <Box
+        sx={{
+          height: { xs: "300px", md: "450px" },
+          backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url("https://woodlab.gr/wp-content/uploads/2022/05/WoodLab_Background.jpg")`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "white"
+        }}
+      >
+        <Typography 
+          variant="h2" 
+          sx={{ 
+            fontWeight: "bold", 
+            textAlign: "center",
+            fontSize: { xs: "2.5rem", md: "4rem" },
+            textShadow: "2px 2px 10px rgba(0,0,0,0.5)"
+          }}
+        >
+          Η Ιστορία μας
+        </Typography>
+      </Box>
 
-      <div className="about-content">
-        <h1>Λίγα λόγια για εμάς</h1>
-        <div className="underline"></div>
-        <p>
-          Είμαστε ο Στέλιος και ο Μάριος Χαλκιαδακης και το WoodLab ειναι το
-          εργαστήριο μας.Οι γνώσεις που μας μετέδωσε ο πατέρας μας Γιώργος,
-          έχοντας πάνω απο 40 χρόνια εμπειρίας στην τέχνη της επιπλοποιίας και
-          της ξυλουργικής, σε συνδυασμό φυσικά με την αγάπη μας για το ξύλο και
-          το design αποτελούν τις βάσεις μας. Πατώντας σε αυτές γερά,
-          συνεχίζουμε να εξελισσόμαστε αναζητώντας διαρκώς καινούργιες τεχνικές,
-          ώστε να ανταποκρινόμαστε όλο και καλύτερα στις ανάγκες και της
-          απαιτήσεις της εποχής μας, σεβόμενοι πάντοτε την τέχνη μας και τους
-          ανθρώπους, που την εμπιστεύονται. Κατασκευάζουμε χειροποίητα έπιπλα
-          κατά παραγγελία με γνώμονα την αντοχή, την ποιότητα, το στυλ και την
-          διαχρονικότητα. Η πολύχρονη εμπειρία μας στην δημιουργία ξύλινων
-          ειδικών κατασκευών σε ιδιωτικούς και επαγγελματικούς χώρους, μας
-          καθιστά ικανούς να συμβάλλουμε με υψηλής αισθητικής δημιουργίες στην
-          διαμόρφωση και την διακόσμηση του χώρου σας.
-        </p>
+      {/* Content Section */}
+      <Container maxWidth="md" sx={{ mt: -8, mb: 8, position: "relative", zIndex: 2 }}>
+        <Paper 
+          elevation={6} 
+          sx={{ 
+            p: { xs: 4, md: 8 }, 
+            borderRadius: 4, 
+            lineHeight: 1.8,
+            bgcolor: "#fff"
+          }}
+        >
+          <Typography variant="h4" gutterBottom sx={{ color: "#4a3728", fontWeight: "bold" }}>
+            Λίγα λόγια για εμάς
+          </Typography>
+          
+          <Box sx={{ width: "80px", height: "4px", bgcolor: "#a67c52", mb: 4 }} />
 
-        <div className="about-actions">
-          <Link to="/contact" className="about-btn">
-            Επικοινωνήστε μαζί μας
-          </Link>
-        </div>
-      </div>
-    </div>
+          <Typography variant="body1" paragraph sx={{ fontSize: "1.1rem", color: "#34495e", textAlign: "justify" }}>
+            Είμαστε ο <strong>Στέλιος</strong> και ο <strong>Μάριος Χαλκιαδάκης</strong> και το WoodLab είναι το εργαστήριό μας.
+            Οι γνώσεις που μας μετέδωσε ο πατέρας μας Γιώργος, έχοντας πάνω από 40 χρόνια εμπειρίας στην τέχνη της επιπλοποιίας,
+            σε συνδυασμό με την αγάπη μας για το ξύλο και το design, αποτελούν τις βάσεις μας.
+          </Typography>
+
+          <Typography variant="body1" paragraph sx={{ fontSize: "1.1rem", color: "#34495e", textAlign: "justify" }}>
+            Πατώντας σε αυτές γερά, συνεχίζουμε να εξελισσόμαστε αναζητώντας διαρκώς καινούργιες τεχνικές, ώστε να ανταποκρινόμαστε
+            στις απαιτήσεις της εποχής μας, σεβόμενοι πάντοτε την τέχνη μας και τους ανθρώπους που την εμπιστεύονται.
+          </Typography>
+
+          <Divider sx={{ my: 4 }} />
+
+          <Typography variant="body1" sx={{ fontSize: "1.1rem", color: "#34495e", fontStyle: "italic", mb: 4 }}>
+            "Κατασκευάζουμε χειροποίητα έπιπλα κατά παραγγελία με γνώμονα την αντοχή, την ποιότητα, το στυλ και την διαχρονικότητα."
+          </Typography>
+
+          <Box sx={{ display: "flex", justifyContent: "center", mt: 6 }}>
+            <Button
+              component={Link}
+              to="/contact"
+              variant="contained"
+              size="large"
+              endIcon={<ChevronRightIcon />}
+              sx={{
+                bgcolor: "#4a3728",
+                padding: "12px 30px",
+                borderRadius: "30px",
+                fontSize: "1rem",
+                "&:hover": {
+                  bgcolor: "#a67c52",
+                  transform: "translateY(-2px)",
+                  boxShadow: 4
+                },
+                transition: "all 0.3s"
+              }}
+            >
+              Επικοινωνήστε μαζί μας
+            </Button>
+          </Box>
+        </Paper>
+      </Container>
+    </Box>
   );
 }
 
