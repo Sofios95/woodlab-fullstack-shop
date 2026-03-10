@@ -1,6 +1,5 @@
 import db from "../config/db.js";
 
-// POST /api/orders (Το checkout σου)
 export const placeOrder = async (req, res) => {
   const client = await db.connect();
   try {
@@ -36,7 +35,6 @@ export const placeOrder = async (req, res) => {
   }
 };
 
-// GET /api/orders/admin/orders
 export const getAllOrders = async (req, res) => {
   try {
     const result = await db.query(`SELECT * FROM orders ORDER BY created_at DESC`);
@@ -46,7 +44,6 @@ export const getAllOrders = async (req, res) => {
   }
 };
 
-// PUT /api/orders/admin/orders/:id/status
 export const updateStatus = async (req, res) => {
   try {
     const { id } = req.params;
@@ -54,11 +51,10 @@ export const updateStatus = async (req, res) => {
     await db.query("UPDATE orders SET status = $1 WHERE id = $2", [status, id]);
     res.json({ message: "Status updated" });
   } catch (err) {
-    res.status(500).send("Error");
+    res.status(500).json({ error: "Error updating status" });
   }
 };
 
-// DELETE /api/orders/admin/orders/:id
 export const deleteOrder = async (req, res) => {
   const client = await db.connect();
   try {
@@ -70,7 +66,7 @@ export const deleteOrder = async (req, res) => {
     res.json({ message: "Order deleted!" });
   } catch (err) {
     await client.query("ROLLBACK");
-    res.status(500).send("Error");
+    res.status(500).json({ error: "Error deleting order" });
   } finally {
     client.release();
   }
