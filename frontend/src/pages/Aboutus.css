@@ -1,98 +1,101 @@
-/* Aboutus.css */
+/* Aboutus.css - The Woodlab Edition */
 
 .about-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 40px;
+  max-width: 1100px;
+  margin: 60px auto;
+  padding: 0 20px;
   animation: fadeIn 0.8s ease-out;
 }
 
-/* Hero Section με την εικόνα του εργαστηρίου */
+/* Hero Section */
 .about-hero {
   width: 100%;
-  height: 450px;
+  height: 500px;
   overflow: hidden;
-  border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 
 .about-hero img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.5s ease;
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .about-hero:hover img {
-  transform: scale(1.03); /* Μικρό zoom εφέ */
+  transform: scale(1.05);
 }
 
-/* Περιεχόμενο */
+/* Το Overlapping Content που σου άρεσε */
 .about-content {
-  max-width: 800px;
+  max-width: 850px;
+  margin: -80px auto 0; /* Εδώ είναι το "μαγικό" πάτημα πάνω στην εικόνα */
+  background: white;
+  padding: 50px;
+  border-radius: 20px;
+  position: relative; /* Σημαντικό για να βγει μπροστά από την εικόνα */
+  z-index: 2;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   text-align: center;
-  padding: 20px;
 }
 
 .about-content h1 {
-  font-size: 2.5rem;
-  color: #2c3e50;
+  font-size: 2.8rem;
+  color: #4a3728; /* Επαναφορά στο ζεστό καφέ */
+  font-family: 'Playfair Display', serif;
   margin-bottom: 10px;
-  font-family: 'Playfair Display', serif; /* Αν έχεις φορτώσει serif font */
 }
 
 .underline {
-  width: 80px;
-  height: 4px;
-  background-color: #a67c52; /* Wood Brown */
+  width: 70px;
+  height: 5px;
+  background-color: #a67c52; /* Wood Gold */
   margin: 0 auto 30px;
-  border-radius: 2px;
+  border-radius: 10px;
 }
 
 .about-content p {
   font-size: 1.15rem;
-  line-height: 1.8;
-  color: #4a4a4a;
-  text-align: justify; /* Για πιο professional βιβλιογραφικό στυλ */
-  margin-bottom: 40px;
+  line-height: 2;
+  color: #444;
+  text-align: justify;
+  margin-bottom: 35px;
 }
 
-/* Κουμπί Δράσης */
-.about-actions {
-  margin-top: 20px;
-}
-
+/* Το κουμπί με MUI αισθητική αλλά Woodlab χρώματα */
 .about-btn {
   display: inline-block;
-  padding: 15px 35px;
-  background-color: #2c3e50;
-  color: #fff;
+  padding: 16px 45px;
+  background-color: #4a3728;
+  color: #fff !important;
   text-decoration: none;
-  border-radius: 50px;
-  font-weight: 600;
-  letter-spacing: 1px;
+  border-radius: 8px; /* Λίγο πιο τετράγωνο για στιβαρότητα */
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 15px rgba(74, 55, 40, 0.3);
 }
 
 .about-btn:hover {
   background-color: #a67c52;
-  transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(166, 124, 82, 0.4);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(166, 124, 82, 0.4);
 }
 
-/* Responsive για κινητά */
+/* Mobile Fixes */
 @media (max-width: 768px) {
-  .about-hero {
-    height: 300px;
+  .about-hero { height: 300px; }
+  .about-content { 
+    margin-top: -30px; 
+    padding: 30px 20px; 
+    width: 90%;
   }
-  
-  .about-content h1 {
-    font-size: 2rem;
-  }
+  .about-content h1 { font-size: 2rem; }
+}
 
-  .about-content p {
-    font-size: 1.05rem;
-  }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
