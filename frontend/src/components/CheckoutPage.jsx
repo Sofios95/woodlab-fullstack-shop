@@ -13,7 +13,7 @@ import {
   Button,
   Box,
   CircularProgress,
-  TextField, // Προσθήκη TextField
+  TextField,
 } from "@mui/material";
 import { useCart } from "../context/useCart";
 import axios from "axios";
@@ -35,6 +35,7 @@ const CheckoutForm = () => {
     fullName: "",
     email: "",
     phone: "",
+    address: "",
   });
 
   const handleInputChange = (e) => {
@@ -66,14 +67,13 @@ const CheckoutForm = () => {
       if (result.error) {
         alert(result.error.message);
       } else if (result.paymentIntent.status === "succeeded") {
-        // 3. Αποθήκευση παραγγελίας στη Postgres
-        // Στέλνουμε fullName, email, phone για να περάσει το validateOrder middleware
         const response = await axios.post(
           "https://woodlab-fullstack-shop.onrender.com/api/orders",
           {
             fullName: customerInfo.fullName,
             email: customerInfo.email,
             phone: customerInfo.phone,
+            address: customerInfo.address,
             items: cartItems,
             total: totalAmount,
             paymentId: result.paymentIntent.id,
@@ -85,8 +85,6 @@ const CheckoutForm = () => {
           response.data?.id || "WOOD-" + Math.floor(Math.random() * 1000);
 
         clearCart();
-
-        // 4. Πάμε στη σελίδα επιτυχίας
         navigate("/order-success", { state: { orderId: newOrderId } });
       }
     } catch (err) {
@@ -127,6 +125,15 @@ const CheckoutForm = () => {
           fullWidth
           required
           value={customerInfo.phone}
+          onChange={handleInputChange}
+        />
+        <TextField
+          label="Διεύθυνση Αποστολής"
+          name="address"
+          variant="outlined"
+          fullWidth
+          required
+          value={customerInfo.address}
           onChange={handleInputChange}
         />
       </Box>
