@@ -20,7 +20,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const stripePromise = loadStripe(
-  "pk_test_51T9TX30bOZflHyLJ1ASd4tTH6DPwIOn2NTCI2DkuXQKIB5ZksUn5iGh9EEgTU9GCjniDhiDYQRuwxsD5mmJQ4uOS00gIsQOWJR"
+  "pk_test_51T9TX30bOZflHyLJ1ASd4tTH6DPwIOn2NTCI2DkuXQKIB5ZksUn5iGh9EEgTU9GCjniDhiDYQRuwxsD5mmJQ4uOS00gIsQOWJR",
 );
 
 const CheckoutForm = () => {
@@ -49,9 +49,11 @@ const CheckoutForm = () => {
 
     try {
       // 1. Δημιουργία Payment Intent (Backend)
-      const { data: { clientSecret } } = await axios.post(
+      const {
+        data: { clientSecret },
+      } = await axios.post(
         "https://woodlab-fullstack-shop.onrender.com/api/stripe/create-payment-intent",
-        { amount: totalAmount }
+        { amount: totalAmount },
       );
 
       // 2. Επιβεβαίωση πληρωμής στη Stripe
@@ -64,7 +66,6 @@ const CheckoutForm = () => {
       if (result.error) {
         alert(result.error.message);
       } else if (result.paymentIntent.status === "succeeded") {
-        
         // 3. Αποθήκευση παραγγελίας στη Postgres
         // Στέλνουμε fullName, email, phone για να περάσει το validateOrder middleware
         const response = await axios.post(
@@ -77,13 +78,14 @@ const CheckoutForm = () => {
             total: totalAmount,
             paymentId: result.paymentIntent.id,
             status: "Paid",
-          }
+          },
         );
 
-        const newOrderId = response.data?.id || "WOOD-" + Math.floor(Math.random() * 1000);
+        const newOrderId =
+          response.data?.id || "WOOD-" + Math.floor(Math.random() * 1000);
 
         clearCart();
-        
+
         // 4. Πάμε στη σελίδα επιτυχίας
         navigate("/order-success", { state: { orderId: newOrderId } });
       }
@@ -98,7 +100,7 @@ const CheckoutForm = () => {
   return (
     <form onSubmit={handleSubmit}>
       {/* Στοιχεία Πελάτη */}
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 3 }}>
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mb: 3 }}>
         <TextField
           label="Ονοματεπώνυμο"
           name="fullName"
@@ -133,8 +135,32 @@ const CheckoutForm = () => {
       <Typography variant="subtitle2" sx={{ mb: 1, color: "#666" }}>
         Στοιχεία Κάρτας
       </Typography>
-      <Box sx={{ mb: 3, p: 2, border: "1px solid #ccc", borderRadius: 2, bgcolor: "#fff" }}>
-        <CardElement options={{ style: { base: { fontSize: "16px" } } }} />
+      <Box
+        sx={{
+          mb: 3,
+          p: 2,
+          border: "1px solid #ccc",
+          borderRadius: 2,
+          bgcolor: "#fff",
+        }}
+      >
+        <CardElement
+          options={{
+            hidePostalCode: true, // <--- ΑΥΤΟ ΕΙΝΑΙ ΤΟ ΜΑΓΙΚΟ ΠΟΥ ΤΟ ΒΓΑΖΕΙ
+            style: {
+              base: {
+                fontSize: "16px",
+                color: "#424770",
+                "::placeholder": {
+                  color: "#aab7c4",
+                },
+              },
+              invalid: {
+                color: "#9e2146",
+              },
+            },
+          }}
+        />
       </Box>
 
       <Button
@@ -158,7 +184,10 @@ function CheckoutPage() {
   return (
     <Container maxWidth="sm" sx={{ py: 10 }}>
       <Paper elevation={4} sx={{ p: 4, borderRadius: 3 }}>
-        <Typography variant="h5" sx={{ mb: 3, fontWeight: 800, color: "#4a3728", textAlign: "center" }}>
+        <Typography
+          variant="h5"
+          sx={{ mb: 3, fontWeight: 800, color: "#4a3728", textAlign: "center" }}
+        >
           Ολοκλήρωση Παραγγελίας
         </Typography>
         <Elements stripe={stripePromise}>
