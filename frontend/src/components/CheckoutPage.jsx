@@ -13,10 +13,11 @@ import {
   Button,
   Box,
   CircularProgress,
+  TextField, // Προσθήκη TextField
 } from "@mui/material";
 import { useCart } from "../context/useCart";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 
 const stripePromise = loadStripe(
   "pk_test_51T9TX30bOZflHyLJ1ASd4tTH6DPwIOn2NTCI2DkuXQKIB5ZksUn5iGh9EEgTU9GCjniDhiDYQRuwxsD5mmJQ4uOS00gIsQOWJR"
@@ -29,6 +30,17 @@ const CheckoutForm = () => {
   const { totalAmount, cartItems, clearCart } = useCart();
   const [loading, setLoading] = useState(false);
 
+  // PRO TAKE: State για τα στοιχεία που απαιτεί ο Validator στο Backend
+  const [customerInfo, setCustomerInfo] = useState({
+    fullName: "",
+    email: "",
+    phone: "",
+  });
+
+  const handleInputChange = (e) => {
+    setCustomerInfo({ ...customerInfo, [e.target.name]: e.target.value });
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!stripe || !elements) return;
@@ -36,13 +48,13 @@ const CheckoutForm = () => {
     setLoading(true);
 
     try {
-      // 1. Παίρνουμε το clientSecret (Στέλνουμε σκέτο το totalAmount)
+      // 1. Δημιουργία Payment Intent (Backend)
       const { data: { clientSecret } } = await axios.post(
         "https://woodlab-fullstack-shop.onrender.com/api/stripe/create-payment-intent",
-        { amount: totalAmount } 
+        { amount: totalAmount }
       );
 
-      // 2. Επιβεβαίωση πληρωμής
+      // 2. Επιβεβαίωση πληρωμής στη Stripe
       const result = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
           card: elements.getElement(CardElement),
@@ -53,10 +65,14 @@ const CheckoutForm = () => {
         alert(result.error.message);
       } else if (result.paymentIntent.status === "succeeded") {
         
-        // 3. Αποθήκευση στη βάση δεδομένων (Postgres)
+        // 3. Αποθήκευση παραγγελίας στη Postgres
+        // Στέλνουμε fullName, email, phone για να περάσει το validateOrder middleware
         const response = await axios.post(
           "https://woodlab-fullstack-shop.onrender.com/api/orders",
           {
+            fullName: customerInfo.fullName,
+            email: customerInfo.email,
+            phone: customerInfo.phone,
             items: cartItems,
             total: totalAmount,
             paymentId: result.paymentIntent.id,
@@ -64,17 +80,16 @@ const CheckoutForm = () => {
           }
         );
 
-        // Παίρνουμε το ID που δημιούργησε η βάση
         const newOrderId = response.data?.id || "WOOD-" + Math.floor(Math.random() * 1000);
 
         clearCart();
         
-        // 4. Navigate στο Success Page περνώντας το Order ID στο state
+        // 4. Πάμε στη σελίδα επιτυχίας
         navigate("/order-success", { state: { orderId: newOrderId } });
       }
     } catch (err) {
       console.error("Checkout Error:", err);
-      alert("Κάτι πήγε στραβά. Δοκιμάστε ξανά.");
+      alert("Κάτι πήγε στραβά. Ελέγξτε τα στοιχεία σας και δοκιμάστε ξανά.");
     } finally {
       setLoading(false);
     }
@@ -82,9 +97,46 @@ const CheckoutForm = () => {
 
   return (
     <form onSubmit={handleSubmit}>
+      {/* Στοιχεία Πελάτη */}
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 3 }}>
+        <TextField
+          label="Ονοματεπώνυμο"
+          name="fullName"
+          variant="outlined"
+          fullWidth
+          required
+          value={customerInfo.fullName}
+          onChange={handleInputChange}
+        />
+        <TextField
+          label="Email"
+          name="email"
+          type="email"
+          variant="outlined"
+          fullWidth
+          required
+          value={customerInfo.email}
+          onChange={handleInputChange}
+        />
+        <TextField
+          label="Τηλέφωνο"
+          name="phone"
+          variant="outlined"
+          fullWidth
+          required
+          value={customerInfo.phone}
+          onChange={handleInputChange}
+        />
+      </Box>
+
+      {/* Stripe Card Input */}
+      <Typography variant="subtitle2" sx={{ mb: 1, color: "#666" }}>
+        Στοιχεία Κάρτας
+      </Typography>
       <Box sx={{ mb: 3, p: 2, border: "1px solid #ccc", borderRadius: 2, bgcolor: "#fff" }}>
         <CardElement options={{ style: { base: { fontSize: "16px" } } }} />
       </Box>
+
       <Button
         fullWidth
         variant="contained"
