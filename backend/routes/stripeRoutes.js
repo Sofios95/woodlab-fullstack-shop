@@ -11,7 +11,7 @@ router.post("/create-payment-intent", async (req, res) => {
       return res.status(400).send({ error: "Amount is required" });
     }
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(amount * 100), // 10.50€ -> 1050 cents
+      amount: Math.round(amount * 100),
       currency: "eur",
       automatic_payment_methods: { enabled: true },
     });
