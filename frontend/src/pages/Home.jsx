@@ -108,33 +108,33 @@ function Home() {
                     image={p.image_url}
                     alt={p.name}
                     sx={{ 
-                      objectFit: "cover",
+                      objectFit: "cover", // Κρατάει την εικόνα σωστή χωρίς παραμόρφωση
                       width: "100%" 
                     }}
                   />
-                  <CardContent sx={{ flexGrow: 1, p: 3 }}>
+                  <CardContent sx={{ flexGrow: 1, p: 3, display: 'flex', flexDirection: 'column' }}>
                     <Typography gutterBottom variant="h5" component="h2" sx={{ fontWeight: 'bold', color: "#2c3e50" }}>
                       {p.name}
                     </Typography>
                     
-                    {/* ΕΔΩ ΕΙΝΑΙ Η ΔΙΟΡΘΩΣΗ ΓΙΑ ΤΗΝ ΠΕΡΙΓΡΑΦΗ */}
+                    {/* FIXED DESCRIPTION HEIGHT */}
                     <Typography 
                       variant="body2" 
                       color="text.secondary" 
                       sx={{ 
                         mb: 2, 
-                        height: '60px',           // Σταθερό ύψος
+                        height: '65px',           // Σταθερό ύψος για να μην κουνιέται το grid
                         overflow: 'hidden',        // Κρύβει το έξτρα κείμενο
                         display: '-webkit-box',
-                        WebkitLineClamp: 3,        // Μόνο 3 γραμμές
+                        WebkitLineClamp: 3,        // Επιτρέπει μόνο 3 γραμμές
                         WebkitBoxOrient: 'vertical',
-                        textOverflow: 'ellipsis'   // Βάζει τις 3 τελείες ...
+                        textOverflow: 'ellipsis'   // Βάζει τις τρεις τελείες (...)
                       }}
                     >
                       {p.description}
                     </Typography>
 
-                    <Typography variant="h6" sx={{ color: "#a67c52", fontWeight: 800 }}>
+                    <Typography variant="h6" sx={{ color: "#a67c52", fontWeight: 800, mt: 'auto' }}>
                       {p.price}€
                     </Typography>
                   </CardContent>
