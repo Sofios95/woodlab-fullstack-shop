@@ -40,7 +40,6 @@ function Home() {
     });
   };
 
-  // 1. Εμφάνιση Loader
   if (loading) {
     return (
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', gap: 2 }}>
@@ -52,7 +51,6 @@ function Home() {
     );
   }
 
-  // 2. Εμφάνιση Error
   if (error) {
     return (
       <Container sx={{ py: 10 }}>
@@ -67,7 +65,6 @@ function Home() {
     <Box sx={{ bgcolor: "#fdfbf9", minHeight: "100vh" }}>
       <ToastContainer />
 
-      {/* Hero Section / Header */}
       <Box sx={{ 
         bgcolor: "#4a3728", 
         color: "white", 
@@ -110,15 +107,33 @@ function Home() {
                     height="240"
                     image={p.image_url}
                     alt={p.name}
-                    sx={{ objectFit: "cover" }}
+                    sx={{ 
+                      objectFit: "cover",
+                      width: "100%" 
+                    }}
                   />
                   <CardContent sx={{ flexGrow: 1, p: 3 }}>
                     <Typography gutterBottom variant="h5" component="h2" sx={{ fontWeight: 'bold', color: "#2c3e50" }}>
                       {p.name}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2, minHeight: '40px' }}>
+                    
+                    {/* ΕΔΩ ΕΙΝΑΙ Η ΔΙΟΡΘΩΣΗ ΓΙΑ ΤΗΝ ΠΕΡΙΓΡΑΦΗ */}
+                    <Typography 
+                      variant="body2" 
+                      color="text.secondary" 
+                      sx={{ 
+                        mb: 2, 
+                        height: '60px',           // Σταθερό ύψος
+                        overflow: 'hidden',        // Κρύβει το έξτρα κείμενο
+                        display: '-webkit-box',
+                        WebkitLineClamp: 3,        // Μόνο 3 γραμμές
+                        WebkitBoxOrient: 'vertical',
+                        textOverflow: 'ellipsis'   // Βάζει τις 3 τελείες ...
+                      }}
+                    >
                       {p.description}
                     </Typography>
+
                     <Typography variant="h6" sx={{ color: "#a67c52", fontWeight: 800 }}>
                       {p.price}€
                     </Typography>
