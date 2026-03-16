@@ -86,82 +86,82 @@ function Home() {
       <Container maxWidth="lg" sx={{ pb: 10 }}>
         <Grid container spacing={4}>
           {products.length > 0 ? (
-            products.map((p) => (
-              <Grid item key={p.id} xs={12} sm={6} md={4}>
-                <Card 
-                  elevation={2}
-                  sx={{ 
-                    height: '100%', 
-                    display: 'flex', 
-                    flexDirection: 'column',
-                    borderRadius: 4,
-                    transition: "transform 0.3s, box-shadow 0.3s",
-                    "&:hover": {
-                      transform: "translateY(-8px)",
-                      boxShadow: "0 12px 30px rgba(0,0,0,0.12)"
-                    }
-                  }}
-                >
-                  <CardMedia
-                    component="img"
-                    height="240"
-                    image={p.image_url}
-                    alt={p.name}
-                    sx={{ 
-                      objectFit: "cover", // Κρατάει την εικόνα σωστή χωρίς παραμόρφωση
-                      width: "100%" 
-                    }}
-                  />
-                  <CardContent sx={{ flexGrow: 1, p: 3, display: 'flex', flexDirection: 'column' }}>
-                    <Typography gutterBottom variant="h5" component="h2" sx={{ fontWeight: 'bold', color: "#2c3e50" }}>
-                      {p.name}
-                    </Typography>
-                    
-                    {/* FIXED DESCRIPTION HEIGHT */}
-                    <Typography 
-                      variant="body2" 
-                      color="text.secondary" 
-                      sx={{ 
-                        mb: 2, 
-                        height: '65px',           // Σταθερό ύψος για να μην κουνιέται το grid
-                        overflow: 'hidden',        // Κρύβει το έξτρα κείμενο
-                        display: '-webkit-box',
-                        WebkitLineClamp: 3,        // Επιτρέπει μόνο 3 γραμμές
-                        WebkitBoxOrient: 'vertical',
-                        textOverflow: 'ellipsis'   // Βάζει τις τρεις τελείες (...)
-                      }}
-                    >
-                      {p.description}
-                    </Typography>
+  products.map((p) => (
+    <Grid item key={p.id} xs={12} sm={6} md={4}>
+      <Card 
+        elevation={2}
+        sx={{ 
+          minHeight: '480px',      // ΤΟ ΣΤΑΝΤΑΡ ΥΨΟΣ: Για να μην είναι "νάνος" χωρίς περιγραφή
+          height: '100%',          // ΤΟ ΕΛΑΣΤΙΚΟ: Επιτρέπει στην κάρτα να ανοίξει προς τα κάτω
+          display: 'flex', 
+          flexDirection: 'column',
+          borderRadius: 4,
+          transition: "transform 0.3s, box-shadow 0.3s",
+          "&:hover": {
+            transform: "translateY(-8px)",
+            boxShadow: "0 12px 30px rgba(0,0,0,0.12)"
+          }
+        }}
+      >
+        <CardMedia
+          component="img"
+          image={p.image_url}
+          alt={p.name}
+          sx={{ 
+            height: '240px',       // ΚΛΕΙΔΩΜΕΝΟ ΥΨΟΣ ΕΙΚΟΝΑΣ
+            minHeight: '240px', 
+            width: "100%",
+            objectFit: "cover",    // Για να μην ξεχειλώνει η φωτό
+            flexShrink: 0          // Απαγορεύει στην εικόνα να αλλάξει μέγεθος
+          }}
+        />
+        <CardContent sx={{ flexGrow: 1, p: 3, display: 'flex', flexDirection: 'column' }}>
+          <Typography gutterBottom variant="h5" component="h2" sx={{ fontWeight: 'bold', color: "#2c3e50" }}>
+            {p.name}
+          </Typography>
+          
+          <Typography 
+            variant="body2" 
+            color="text.secondary" 
+            sx={{ 
+              mb: 2, 
+              whiteSpace: 'pre-line',     // ΑΝΑΓΝΩΡΙΖΕΙ ΤΑ NEWLINES ΠΟΥ ΕΙΠΕΣ
+              minHeight: '60px',          // Κρατάει έναν ελάχιστο χώρο για το κείμενο
+              // Αν θες να "μαζεύεται" μετά από 6-7 γραμμές βάλε τα WebkitBoxOrient κλπ.
+              // Αν θες να ανοίγει ΑΠΕΡΙΟΡΙΣΤΑ, άφησέ το έτσι.
+            }}
+          >
+            {p.description}
+          </Typography>
 
-                    <Typography variant="h6" sx={{ color: "#a67c52", fontWeight: 800, mt: 'auto' }}>
-                      {p.price}€
-                    </Typography>
-                  </CardContent>
-                  <CardActions sx={{ p: 2, pt: 0 }}>
-                    <Button 
-                      fullWidth 
-                      variant="contained" 
-                      startIcon={<AddShoppingCartIcon />}
-                      onClick={() => handleAddToCart(p)}
-                      sx={{ 
-                        bgcolor: "#4a3728", 
-                        py: 1.2,
-                        borderRadius: 2,
-                        "&:hover": { bgcolor: "#a67c52" }
-                      }}
-                    >
-                      ADD TO CART
-                    </Button>
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))
-          ) : (
-            <Grid item xs={12}>
-              <Typography variant="h6" align="center">Δεν βρέθηκαν προϊόντα.</Typography>
-            </Grid>
-          )}
+          <Typography variant="h6" sx={{ color: "#a67c52", fontWeight: 800, mt: 'auto' }}>
+            {p.price}€
+          </Typography>
+        </CardContent>
+        <CardActions sx={{ p: 2, pt: 0 }}>
+          <Button 
+            fullWidth 
+            variant="contained" 
+            startIcon={<AddShoppingCartIcon />}
+            onClick={() => handleAddToCart(p)}
+            sx={{ 
+              bgcolor: "#4a3728", 
+              py: 1.2,
+              borderRadius: 2,
+              "&:hover": { bgcolor: "#a67c52" }
+            }}
+          >
+            ADD TO CART
+          </Button>
+        </CardActions>
+      </Card>
+    </Grid>
+  ))
+) : (
+  <Grid item xs={12}>
+    <Typography variant="h6" align="center">Δεν βρέθηκαν προϊόντα.</Typography>
+  </Grid>
+)}
         </Grid>
       </Container>
     </Box>
