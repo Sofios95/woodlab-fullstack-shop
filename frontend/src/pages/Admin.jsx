@@ -2,16 +2,18 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { 
   Container, Typography, Box, Paper, Tab, Tabs, TextField, 
-  Button, Grid, Card, Divider, Chip, IconButton 
+  Button, Grid, Card, Divider, Chip, IconButton, Stack 
 } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Admin() {
-  const [activeTab, setActiveTab] = useState(0); // MUI Tabs use index 0, 1
+  const [activeTab, setActiveTab] = useState(0);
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
   const [editingId, setEditingId] = useState(null);
@@ -29,14 +31,14 @@ function Admin() {
     try {
       const response = await axios.get("https://woodlab-fullstack-shop.onrender.com/api/home");
       setProducts(response.data);
-    } catch (err) { console.error("Error:", err); }
+    } catch (err) { console.error("Error fetching products:", err); }
   };
 
   const fetchOrders = async () => {
     try {
       const response = await axios.get("https://woodlab-fullstack-shop.onrender.com/api/orders/admin");
       setOrders(response.data);
-    } catch (err) { console.error("Error:", err); }
+    } catch (err) { console.error("Error fetching orders:", err); }
   };
 
   const handleChange = (e) => {
@@ -48,13 +50,17 @@ function Admin() {
     try {
       if (editingId) {
         await axios.put(`https://woodlab-fullstack-shop.onrender.com/api/admin/${editingId}`, product);
+        toast.info("Το προϊόν ενημερώθηκε! 🪵");
       } else {
         await axios.post("https://woodlab-fullstack-shop.onrender.com/api/admin", product);
+        toast.success("Νέο προϊόν προστέθηκε! ✨");
       }
       setProduct({ name: "", price: "", description: "", image_url: "", stock_quantity: "" });
       setEditingId(null);
       fetchProducts();
-    } catch (err) { alert("Error saving product"); }
+    } catch (err) { 
+      toast.error("Σφάλμα κατά την αποθήκευση");
+    }
   };
 
   const handleEdit = (p) => {
@@ -63,17 +69,33 @@ function Admin() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  // Η ΛΕΙΤΟΥΡΓΙΑ ΔΙΑΓΡΑΦΗΣ ΠΟΥ ΕΛΕΙΠΕ
+  const handleDelete = async (id) => {
+    if (window.confirm("Είσαι σίγουρος ότι θέλεις να διαγράψεις οριστικά αυτό το προϊόν;")) {
+      try {
+        await axios.delete(`https://woodlab-fullstack-shop.onrender.com/api/admin/${id}`);
+        toast.warn("Το προϊόν διαγράφηκε επιτυχώς.");
+        fetchProducts();
+      } catch (err) {
+        console.error("Delete error:", err);
+        toast.error("Αποτυχία διαγραφής. Ελέγξτε το backend.");
+      }
+    }
+  };
+
   const updateOrderStatus = async (id, currentStatus) => {
     const nextStatus = currentStatus === "pending" ? "completed" : "pending";
     try {
       await axios.put(`https://woodlab-fullstack-shop.onrender.com/api/orders/admin/${id}/status`, { status: nextStatus });
       fetchOrders();
-    } catch (err) { alert("Error updating status"); }
+      toast.success("Η κατάσταση της παραγγελίας ενημερώθηκε!");
+    } catch (err) { toast.error("Σφάλμα στην ενημέρωση παραγγελίας"); }
   };
 
   return (
     <Container maxWidth="lg" sx={{ py: 5 }}>
-      <Typography variant="h3" align="center" sx={{ mb: 4, fontWeight: 800, color: "primary.main" }}>
+      <ToastContainer position="bottom-right" theme="dark" />
+      <Typography variant="h3" align="center" sx={{ mb: 4, fontWeight: 800, color: "#4a3728" }}>
         Admin Dashboard 🪵
       </Typography>
 
@@ -82,8 +104,11 @@ function Admin() {
           value={activeTab} 
           onChange={(e, newVal) => setActiveTab(newVal)} 
           centered
-          textColor="primary"
-          indicatorColor="primary"
+          sx={{
+            '& .MuiTabs-indicator': { bgcolor: '#a67c52' },
+            '& .MuiTab-root': { color: '#4a3728' },
+            '& .Mui-selected': { color: '#a67c52 !important' },
+          }}
         >
           <Tab icon={<InventoryIcon />} label="Products & Stock" />
           <Tab icon={<ReceiptLongIcon />} label="Order Management" />
@@ -91,7 +116,7 @@ function Admin() {
       </Paper>
 
       {activeTab === 0 && (
-        <Box className="admin-content-fade">
+        <Box>
           <Paper sx={{ p: 4, borderRadius: 3, mb: 4 }}>
             <Typography variant="h6" sx={{ mb: 3, fontWeight: 'bold' }}>
               {editingId ? "Επεξεργασία Προϊόντος" : "Προσθήκη Νέου Προϊόντος"}
@@ -99,7 +124,7 @@ function Admin() {
             <form onSubmit={handleSubmit}>
               <Grid container spacing={2}>
                 <Grid item xs={12} md={6}>
-                  <TextField fullWidth label="Όνομα" name="name" value={product.name} onChange={handleChange} required variant="outlined" />
+                  <TextField fullWidth label="Όνομα" name="name" value={product.name} onChange={handleChange} required />
                 </Grid>
                 <Grid item xs={6} md={3}>
                   <TextField fullWidth label="Τιμή (€)" type="number" name="price" value={product.price} onChange={handleChange} required />
@@ -111,10 +136,10 @@ function Admin() {
                   <TextField fullWidth label="URL Εικόνας" name="image_url" value={product.image_url} onChange={handleChange} />
                 </Grid>
                 <Grid item xs={12}>
-                  <TextField fullWidth multiline rows={3} label="Περιγραφή" name="description" value={product.description} onChange={handleChange} />
+                  <TextField fullWidth multiline rows={4} label="Περιγραφή" name="description" value={product.description} onChange={handleChange} helperText="Μπορείτε να πατήσετε Enter για νέες γραμμές." />
                 </Grid>
                 <Grid item xs={12} sx={{ display: 'flex', gap: 2 }}>
-                  <Button fullWidth variant="contained" type="submit" startIcon={<SaveIcon />} sx={{ bgcolor: "primary.main", py: 1.5 }}>
+                  <Button fullWidth variant="contained" type="submit" startIcon={<SaveIcon />} sx={{ bgcolor: "#4a3728", py: 1.5, "&:hover": { bgcolor: "#a67c52" } }}>
                     {editingId ? "Ενημέρωση" : "Αποθήκευση"}
                   </Button>
                   {editingId && (
@@ -127,23 +152,24 @@ function Admin() {
             </form>
           </Paper>
 
-          {/* Product List */}
           <Stack spacing={2}>
             {products.map((p) => (
-              <Card key={p.id} sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderLeft: "6px solid", borderColor: p.stock_quantity < 5 ? "error.main" : "success.main" }}>
-                <Box>
+              <Card key={p.id} sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderLeft: "6px solid", borderColor: p.stock_quantity < 5 ? "#d32f2f" : "#2e7d32" }}>
+                <Box sx={{ flexGrow: 1, mr: 2 }}>
                   <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>{p.name}</Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'pre-line', fontSize: '0.85rem' }}>
+                    {p.description}
+                  </Typography>
                   <Chip 
                     label={`${p.stock_quantity} σε απόθεμα`} 
                     size="small" 
                     color={p.stock_quantity < 5 ? "error" : "success"} 
-                    variant="outlined"
                     sx={{ mt: 1 }}
                   />
                 </Box>
-                <Box>
+                <Box sx={{ display: 'flex' }}>
                   <IconButton onClick={() => handleEdit(p)} color="primary"><EditIcon /></IconButton>
-                  <IconButton onClick={() => alert("Delete logic here")} sx={{ color: "error.main" }}><DeleteIcon /></IconButton>
+                  <IconButton onClick={() => handleDelete(p.id)} sx={{ color: "#d32f2f" }}><DeleteIcon /></IconButton>
                 </Box>
               </Card>
             ))}
@@ -152,10 +178,10 @@ function Admin() {
       )}
 
       {activeTab === 1 && (
-        <Box className="admin-content-fade">
+        <Box>
           <Typography variant="h5" sx={{ mb: 3, fontWeight: 'bold' }}>Πρόσφατες Πωλήσεις</Typography>
           {orders.map((o) => (
-            <Card key={o.id} sx={{ p: 3, mb: 2, borderLeft: "6px solid", borderColor: o.status === "pending" ? "warning.main" : "success.main" }}>
+            <Card key={o.id} sx={{ p: 3, mb: 2, borderLeft: "6px solid", borderColor: o.status === "pending" ? "#ed6c02" : "#2e7d32" }}>
               <Grid container alignItems="center" spacing={2}>
                 <Grid item xs={12} md={4}>
                   <Typography variant="h6">Order #{o.id}</Typography>
@@ -172,8 +198,9 @@ function Admin() {
                     size="small"
                     onClick={() => updateOrderStatus(o.id, o.status)}
                     sx={{ 
-                      bgcolor: o.status === "pending" ? "warning.main" : "success.main",
-                      color: "white"
+                      bgcolor: o.status === "pending" ? "#ed6c02" : "#2e7d32",
+                      color: "white",
+                      "&:hover": { opacity: 0.9 }
                     }}
                   >
                     {o.status === "pending" ? "🔔 Εκκρεμεί" : "✅ Ολοκληρώθηκε"}
@@ -187,8 +214,5 @@ function Admin() {
     </Container>
   );
 }
-
-// Χρησιμοποιούμε το Stack από το MUI
-import { Stack } from "@mui/material";
 
 export default Admin;
