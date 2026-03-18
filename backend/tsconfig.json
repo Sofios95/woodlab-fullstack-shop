@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    /* Base Options */
+    "target": "ESNext",                                // Υποστήριξη για τις πιο σύγχρονες λειτουργίες της JS
+    "module": "ESNext",                                // Χρήση ES Modules (import/export)
+    "moduleResolution": "node",                        // Πώς η TS βρίσκει τα πακέτα στον φάκελο node_modules
+    "lib": ["ESNext"],                                 // Βιβλιοθήκες που είναι διαθέσιμες στο runtime
+    
+    /* Interop Constraints */
+    "allowSyntheticDefaultImports": true,             // Επιτρέπει import express from 'express'
+    "esModuleInterop": true,                          // Διορθώνει προβλήματα εισαγωγής μεταξύ CommonJS και ES Modules
+    "forceConsistentCasingInFileNames": true,         // Προστασία για διαφορές Windows/Linux στα ονόματα αρχείων
+
+    /* Τύποι (Types) */
+    "types": ["node"],                                 // Φορτώνει τους τύπους του Node.js (process, κλπ)
+
+    /* Build Options */
+    "outDir": "./dist",                                // Πού θα μπαίνει η "έτοιμη" JS μετά το compile
+    "rootDir": "./",                                   // Πού βρίσκεται ο κώδικας πηγής (.ts αρχεία)
+    "sourceMap": true,                                 // Βοηθάει στο debugging (συνδέει την JS με την TS στο error)
+    "declaration": true,                               // Δημιουργεί .d.ts αρχεία για τους τύπους σου
+
+    /* Strictness - Η "καρδιά" της TS */
+    "strict": true,                                    // Ενεργοποιεί όλους τους αυστηρούς ελέγχους
+    "noImplicitAny": true,                             // Δεν επιτρέπει μεταβλητές χωρίς τύπο (any)
+    "strictNullChecks": true,                          // Σε προστατεύει από το να διαβάσεις κάτι που είναι null
+    "noUncheckedIndexedAccess": true,                  // Έλεγχος όταν διαβάζεις arrays/objects με κλειδιά
+
+    /* Performance & Cleanup */
+    "skipLibCheck": true,                              // Μην ελέγχεις τους τύπους μέσα στα node_modules (κερδίζεις χρόνο)
+    "noUnusedLocals": true,                            // Warning αν έχεις μεταβλητές που δεν χρησιμοποιείς
+    "noUnusedParameters": true                         // Warning αν έχεις παραμέτρους σε functions που δεν χρησιμοποιείς
+  , "jsx": "react-jsx"
+},
+  "include": ["**/*.ts"],                              // Ποια αρχεία να περιλαμβάνει ο compiler
+  "exclude": ["node_modules", "dist"]                  // Ποια αρχεία να αγνοεί
+}
