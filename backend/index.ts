@@ -26,5 +26,4 @@ app.get("/health", (_req: Request, res: Response) => {
 
 app.listen(port, () => {
   console.log(`🚀 Server running on http://localhost:${port}`);
-  console.log(`💪 i9 Power engaged!`);
 });
