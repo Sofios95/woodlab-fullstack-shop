@@ -12,19 +12,26 @@ function Footer() {
     <Box 
       component="footer" 
       sx={{ 
-        bgcolor: "#2c1e14", // Πολύ σκούρο καφέ/μαύρο για αντίθεση
+        bgcolor: "#2c1e14", 
         color: "#f0e6dd", 
         py: 6, 
-        mt: 'auto', // Σπρώχνει το footer κάτω αν το περιεχόμενο είναι λίγο
+        mt: 'auto', 
         borderTop: "4px solid #a67c52" 
       }}
     >
       <Container maxWidth="lg">
-        <Grid container spacing={4} justifyContent="space-between" alignItems="center">
+        {/* Αντικατάσταση Grid με Box Flex για σταθερότητα στο Build */}
+        <Box sx={{ 
+          display: 'flex', 
+          flexDirection: { xs: 'column', md: 'row' }, 
+          justifyContent: 'space-between', 
+          alignItems: 'center',
+          gap: 4
+        }}>
           
           {/* Social & Links */}
-          <Grid item xs={12} md={4} sx={{ textAlign: { xs: 'center', md: 'left' } }}>
-            <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2, color: "#a67c52" }}>
+          <Box sx={{ flex: 1, textAlign: { xs: 'center', md: 'left' } }}>
+            <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 1, color: "#a67c52", letterSpacing: 1 }}>
               WOODLAB
             </Typography>
             <Stack direction="row" spacing={1} justifyContent={{ xs: 'center', md: 'flex-start' }}>
@@ -53,40 +60,41 @@ function Footer() {
                 <LanguageIcon />
               </IconButton>
             </Stack>
-          </Grid>
+          </Box>
 
           {/* About Link */}
-          <Grid item xs={12} md={4} sx={{ textAlign: 'center' }}>
+          <Box sx={{ flex: 1, textAlign: 'center' }}>
             <Typography 
               component={Link} 
               to="/aboutus" 
               sx={{ 
                 color: "#f0e6dd", 
                 textDecoration: "none", 
-                fontWeight: 500,
+                fontWeight: 600,
+                fontSize: "1.1rem",
                 "&:hover": { color: "#a67c52", textDecoration: "underline" }
               }}
             >
               About Us
             </Typography>
-          </Grid>
+          </Box>
 
           {/* Copyright */}
-          <Grid item xs={12} md={4} sx={{ textAlign: { xs: 'center', md: 'right' } }}>
+          <Box sx={{ flex: 1, textAlign: { xs: 'center', md: 'right' } }}>
             <Typography variant="body2" sx={{ opacity: 0.7 }}>
               © Copyright {currentYear} | by DevSof
             </Typography>
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
 
         <Divider sx={{ my: 3, bgcolor: "rgba(240, 230, 221, 0.1)" }} />
 
         {/* Το κρυφό link για τον Admin */}
-        <Box sx={{ display: 'flex', justifyContent: 'center', opacity: 0.1 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', opacity: 0.05 }}>
           <Typography 
             component={Link} 
             to="/secret-admin-gate" 
-            sx={{ color: "inherit", textDecoration: "none", fontSize: "10px" }}
+            sx={{ color: "inherit", textDecoration: "none", fontSize: "10px", cursor: 'default' }}
           >
             .
           </Typography>
@@ -95,8 +103,5 @@ function Footer() {
     </Box>
   );
 }
-
-// Χρειάζεται και το Grid import
-import { Grid } from "@mui/material";
 
 export default Footer;

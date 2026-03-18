@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { 
   Container, Typography, Box, Paper, Tab, Tabs, TextField, 
-  Button, Grid, Card, Divider, Chip, IconButton, Stack 
+  Button, Card, Chip, IconButton, Stack 
 } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -12,13 +12,32 @@ import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-function Admin() {
-  const [activeTab, setActiveTab] = useState(0);
-  const [products, setProducts] = useState([]);
-  const [orders, setOrders] = useState([]);
-  const [editingId, setEditingId] = useState(null);
+// Interfaces
+interface Product {
+  id?: number;
+  name: string;
+  price: number | string;
+  description: string;
+  image_url: string;
+  stock_quantity: number | string;
+}
 
-  const [product, setProduct] = useState({
+interface Order {
+  id: number;
+  customer_name: string;
+  customer_phone: string;
+  customer_address: string;
+  total_amount: number;
+  status: "pending" | "completed";
+}
+
+const Admin: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<number>(0);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [editingId, setEditingId] = useState<number | null>(null);
+
+  const [product, setProduct] = useState<Product>({
     name: "", price: "", description: "", image_url: "", stock_quantity: "",
   });
 
@@ -29,23 +48,23 @@ function Admin() {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get("https://woodlab-fullstack-shop.onrender.com/api/home");
+      const response = await axios.get<Product[]>("https://woodlab-fullstack-shop.onrender.com/api/home");
       setProducts(response.data);
     } catch (err) { console.error("Error fetching products:", err); }
   };
 
   const fetchOrders = async () => {
     try {
-      const response = await axios.get("https://woodlab-fullstack-shop.onrender.com/api/orders/admin");
+      const response = await axios.get<Order[]>("https://woodlab-fullstack-shop.onrender.com/api/orders/admin");
       setOrders(response.data);
     } catch (err) { console.error("Error fetching orders:", err); }
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setProduct({ ...product, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       if (editingId) {
@@ -63,14 +82,15 @@ function Admin() {
     }
   };
 
-  const handleEdit = (p) => {
-    setEditingId(p.id);
-    setProduct({ ...p });
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  const handleEdit = (p: Product) => {
+    if (p.id) {
+      setEditingId(p.id);
+      setProduct({ ...p });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
-  // Η ΛΕΙΤΟΥΡΓΙΑ ΔΙΑΓΡΑΦΗΣ ΠΟΥ ΕΛΕΙΠΕ
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: number) => {
     if (window.confirm("Είσαι σίγουρος ότι θέλεις να διαγράψεις οριστικά αυτό το προϊόν;")) {
       try {
         await axios.delete(`https://woodlab-fullstack-shop.onrender.com/api/admin/${id}`);
@@ -78,12 +98,12 @@ function Admin() {
         fetchProducts();
       } catch (err) {
         console.error("Delete error:", err);
-        toast.error("Αποτυχία διαγραφής. Ελέγξτε το backend.");
+        toast.error("Αποτυχία διαγραφής.");
       }
     }
   };
 
-  const updateOrderStatus = async (id, currentStatus) => {
+  const updateOrderStatus = async (id: number, currentStatus: string) => {
     const nextStatus = currentStatus === "pending" ? "completed" : "pending";
     try {
       await axios.put(`https://woodlab-fullstack-shop.onrender.com/api/orders/admin/${id}/status`, { status: nextStatus });
@@ -102,7 +122,7 @@ function Admin() {
       <Paper sx={{ mb: 4, borderRadius: 3 }}>
         <Tabs 
           value={activeTab} 
-          onChange={(e, newVal) => setActiveTab(newVal)} 
+          onChange={(_e, newVal) => setActiveTab(newVal)} 
           centered
           sx={{
             '& .MuiTabs-indicator': { bgcolor: '#a67c52' },
@@ -122,23 +142,26 @@ function Admin() {
               {editingId ? "Επεξεργασία Προϊόντος" : "Προσθήκη Νέου Προϊόντος"}
             </Typography>
             <form onSubmit={handleSubmit}>
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={6}>
+              {/* Αντικατάσταση Grid με Box display: grid */}
+              <Box sx={{ 
+                display: 'grid', 
+                gap: 2, 
+                gridTemplateColumns: { xs: '1fr', md: '2fr 1fr 1fr' } 
+              }}>
+                <Box sx={{ gridColumn: { xs: 'span 1', md: 'span 1' } }}>
                   <TextField fullWidth label="Όνομα" name="name" value={product.name} onChange={handleChange} required />
-                </Grid>
-                <Grid item xs={6} md={3}>
-                  <TextField fullWidth label="Τιμή (€)" type="number" name="price" value={product.price} onChange={handleChange} required />
-                </Grid>
-                <Grid item xs={6} md={3}>
-                  <TextField fullWidth label="Απόθεμα" type="number" name="stock_quantity" value={product.stock_quantity} onChange={handleChange} required />
-                </Grid>
-                <Grid item xs={12}>
+                </Box>
+                <TextField fullWidth label="Τιμή (€)" type="number" name="price" value={product.price} onChange={handleChange} required />
+                <TextField fullWidth label="Απόθεμα" type="number" name="stock_quantity" value={product.stock_quantity} onChange={handleChange} required />
+                
+                <Box sx={{ gridColumn: '1 / -1' }}>
                   <TextField fullWidth label="URL Εικόνας" name="image_url" value={product.image_url} onChange={handleChange} />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField fullWidth multiline rows={4} label="Περιγραφή" name="description" value={product.description} onChange={handleChange} helperText="Μπορείτε να πατήσετε Enter για νέες γραμμές." />
-                </Grid>
-                <Grid item xs={12} sx={{ display: 'flex', gap: 2 }}>
+                </Box>
+                <Box sx={{ gridColumn: '1 / -1' }}>
+                  <TextField fullWidth multiline rows={4} label="Περιγραφή" name="description" value={product.description} onChange={handleChange} helperText="Πατήστε Enter για νέες γραμμές." />
+                </Box>
+                
+                <Box sx={{ gridColumn: '1 / -1', display: 'flex', gap: 2 }}>
                   <Button fullWidth variant="contained" type="submit" startIcon={<SaveIcon />} sx={{ bgcolor: "#4a3728", py: 1.5, "&:hover": { bgcolor: "#a67c52" } }}>
                     {editingId ? "Ενημέρωση" : "Αποθήκευση"}
                   </Button>
@@ -147,14 +170,14 @@ function Admin() {
                       Ακύρωση
                     </Button>
                   )}
-                </Grid>
-              </Grid>
+                </Box>
+              </Box>
             </form>
           </Paper>
 
           <Stack spacing={2}>
             {products.map((p) => (
-              <Card key={p.id} sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderLeft: "6px solid", borderColor: p.stock_quantity < 5 ? "#d32f2f" : "#2e7d32" }}>
+              <Card key={p.id} sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderLeft: "6px solid", borderColor: Number(p.stock_quantity) < 5 ? "#d32f2f" : "#2e7d32" }}>
                 <Box sx={{ flexGrow: 1, mr: 2 }}>
                   <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>{p.name}</Typography>
                   <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'pre-line', fontSize: '0.85rem' }}>
@@ -163,13 +186,13 @@ function Admin() {
                   <Chip 
                     label={`${p.stock_quantity} σε απόθεμα`} 
                     size="small" 
-                    color={p.stock_quantity < 5 ? "error" : "success"} 
+                    color={Number(p.stock_quantity) < 5 ? "error" : "success"} 
                     sx={{ mt: 1 }}
                   />
                 </Box>
                 <Box sx={{ display: 'flex' }}>
                   <IconButton onClick={() => handleEdit(p)} color="primary"><EditIcon /></IconButton>
-                  <IconButton onClick={() => handleDelete(p.id)} sx={{ color: "#d32f2f" }}><DeleteIcon /></IconButton>
+                  <IconButton onClick={() => p.id && handleDelete(p.id)} sx={{ color: "#d32f2f" }}><DeleteIcon /></IconButton>
                 </Box>
               </Card>
             ))}
@@ -182,16 +205,22 @@ function Admin() {
           <Typography variant="h5" sx={{ mb: 3, fontWeight: 'bold' }}>Πρόσφατες Πωλήσεις</Typography>
           {orders.map((o) => (
             <Card key={o.id} sx={{ p: 3, mb: 2, borderLeft: "6px solid", borderColor: o.status === "pending" ? "#ed6c02" : "#2e7d32" }}>
-              <Grid container alignItems="center" spacing={2}>
-                <Grid item xs={12} md={4}>
+              {/* Αντικατάσταση Grid με Box display: flex για τις παραγγελίες */}
+              <Box sx={{ 
+                display: 'flex', 
+                flexDirection: { xs: 'column', md: 'row' }, 
+                alignItems: { md: 'center' }, 
+                gap: 2 
+              }}>
+                <Box sx={{ flex: 1 }}>
                   <Typography variant="h6">Order #{o.id}</Typography>
                   <Typography variant="body2" color="text.secondary">👤 {o.customer_name || "Guest"}</Typography>
-                </Grid>
-                <Grid item xs={12} md={4}>
+                </Box>
+                <Box sx={{ flex: 1 }}>
                   <Typography variant="body2">📞 {o.customer_phone}</Typography>
                   <Typography variant="body2">📍 {o.customer_address}</Typography>
-                </Grid>
-                <Grid item xs={12} md={4} sx={{ textAlign: { md: 'right' } }}>
+                </Box>
+                <Box sx={{ flex: 1, textAlign: { md: 'right' } }}>
                   <Typography variant="h6" sx={{ mb: 1 }}>{o.total_amount}€</Typography>
                   <Button 
                     variant="contained" 
@@ -205,8 +234,8 @@ function Admin() {
                   >
                     {o.status === "pending" ? "🔔 Εκκρεμεί" : "✅ Ολοκληρώθηκε"}
                   </Button>
-                </Grid>
-              </Grid>
+                </Box>
+              </Box>
             </Card>
           ))}
         </Box>

@@ -19,30 +19,38 @@ import { useCart } from "../context/useCart";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+// PRO TIP: Καλό είναι το κλειδί να μπαίνει σε .env αρχείο, αλλά για το demo είναι οκ εδώ
 const stripePromise = loadStripe(
   "pk_test_51T9TX30bOZflHyLJ1ASd4tTH6DPwIOn2NTCI2DkuXQKIB5ZksUn5iGh9EEgTU9GCjniDhiDYQRuwxsD5mmJQ4uOS00gIsQOWJR",
 );
 
-const CheckoutForm = () => {
+interface CustomerInfo {
+  fullName: string;
+  email: string;
+  phone: string;
+  address: string;
+}
+
+const CheckoutForm: React.FC = () => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
   const { totalAmount, cartItems, clearCart } = useCart();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  // PRO TAKE: State για τα στοιχεία που απαιτεί ο Validator στο Backend
-  const [customerInfo, setCustomerInfo] = useState({
+  const [customerInfo, setCustomerInfo] = useState<CustomerInfo>({
     fullName: "",
     email: "",
     phone: "",
     address: "",
   });
 
-  const handleInputChange = (e) => {
+  // Type-safe handler για τα inputs
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCustomerInfo({ ...customerInfo, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!stripe || !elements) return;
 
@@ -50,23 +58,32 @@ const CheckoutForm = () => {
 
     try {
       // 1. Δημιουργία Payment Intent (Backend)
+      // Στέλνουμε το ποσό * 100 γιατί η Stripe δουλεύει με cents (π.χ. 10€ = 1000)
       const {
         data: { clientSecret },
       } = await axios.post(
         "https://woodlab-fullstack-shop.onrender.com/api/stripe/create-payment-intent",
-        { amount: totalAmount },
+        { amount: totalAmount }
       );
 
       // 2. Επιβεβαίωση πληρωμής στη Stripe
+      const cardElement = elements.getElement(CardElement);
+      if (!cardElement) return;
+
       const result = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
-          card: elements.getElement(CardElement),
+          card: cardElement,
+          billing_details: {
+            name: customerInfo.fullName,
+            email: customerInfo.email,
+          }
         },
       });
 
       if (result.error) {
         alert(result.error.message);
-      } else if (result.paymentIntent.status === "succeeded") {
+      } else if (result.paymentIntent?.status === "succeeded") {
+        // 3. Αποθήκευση παραγγελίας στη βάση
         const response = await axios.post(
           "https://woodlab-fullstack-shop.onrender.com/api/orders",
           {
@@ -81,15 +98,14 @@ const CheckoutForm = () => {
           },
         );
 
-        const newOrderId =
-          response.data?.id || "WOOD-" + Math.floor(Math.random() * 1000);
+        const newOrderId = response.data?.id || "WOOD-" + Math.floor(Math.random() * 1000);
 
         clearCart();
         navigate("/order-success", { state: { orderId: newOrderId } });
       }
     } catch (err) {
       console.error("Checkout Error:", err);
-      alert("Κάτι πήγε στραβά. Ελέγξτε τα στοιχεία σας και δοκιμάστε ξανά.");
+      alert("Σφάλμα κατά την πληρωμή. Δοκιμάστε ξανά.");
     } finally {
       setLoading(false);
     }
@@ -97,7 +113,6 @@ const CheckoutForm = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      {/* Στοιχεία Πελάτη */}
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mb: 3 }}>
         <TextField
           label="Ονοματεπώνυμο"
@@ -138,7 +153,6 @@ const CheckoutForm = () => {
         />
       </Box>
 
-      {/* Stripe Card Input */}
       <Typography variant="subtitle2" sx={{ mb: 1, color: "#666" }}>
         Στοιχεία Κάρτας
       </Typography>
@@ -153,18 +167,14 @@ const CheckoutForm = () => {
       >
         <CardElement
           options={{
-            hidePostalCode: true, // <--- ΑΥΤΟ ΕΙΝΑΙ ΤΟ ΜΑΓΙΚΟ ΠΟΥ ΤΟ ΒΓΑΖΕΙ
+            hidePostalCode: true,
             style: {
               base: {
                 fontSize: "16px",
                 color: "#424770",
-                "::placeholder": {
-                  color: "#aab7c4",
-                },
+                "::placeholder": { color: "#aab7c4" },
               },
-              invalid: {
-                color: "#9e2146",
-              },
+              invalid: { color: "#9e2146" },
             },
           }}
         />
@@ -180,16 +190,16 @@ const CheckoutForm = () => {
         {loading ? (
           <CircularProgress size={24} color="inherit" />
         ) : (
-          `ΠΛΗΡΩΜΗ ${totalAmount.toFixed(2)}€`
+          `ΠΛΗΡΩΜΗ ${Number(totalAmount).toFixed(2)}€`
         )}
       </Button>
     </form>
   );
 };
 
-function CheckoutPage() {
+const CheckoutPage: React.FC = () => {
   return (
-    <Container maxWidth="sm" sx={{ py: 10 }}>
+    <Container maxWidth="sm" sx={{ py: { xs: 4, md: 10 } }}>
       <Paper elevation={4} sx={{ p: 4, borderRadius: 3 }}>
         <Typography
           variant="h5"

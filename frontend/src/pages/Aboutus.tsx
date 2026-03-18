@@ -5,7 +5,7 @@ import {
 } from "@mui/material";
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
-function Aboutus() {
+const Aboutus: React.FC = () => {
   return (
     <Box>
       {/* Hero Section με Background Image */}
