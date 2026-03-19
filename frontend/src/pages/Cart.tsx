@@ -17,13 +17,13 @@ function Cart() {
   if (cartItems.length === 0) {
     return (
       <Container maxWidth="sm" sx={{ py: 10, textAlign: 'center' }}>
-        <Typography variant="h5" sx={{ mb: 3, color: "primary.main", fontWeight: 700 }}>
+        <Typography variant="h5" sx={{ mb: 3, color: "#4a3728", fontWeight: 700 }}>
           Το καλάθι σου είναι άδειο! 🪵
         </Typography>
         <Button 
           variant="contained" 
           onClick={() => navigate('/')} 
-          sx={{ bgcolor: "primary.main", "&:hover": { bgcolor: "primary.light" } }}
+          sx={{ bgcolor: "#4a3728", "&:hover": { bgcolor: "#a67c52" } }}
         >
           Επιστροφή στα Προϊόντα
         </Button>
@@ -33,7 +33,7 @@ function Cart() {
 
   return (
     <Container maxWidth="md" sx={{ py: 5 }}>
-      <Typography variant="h4" sx={{ mb: 4, fontWeight: 800, color: "primary.main" }}>
+      <Typography variant="h4" sx={{ mb: 4, fontWeight: 800, color: "#4a3728" }}>
         Το Καλάθι μου
       </Typography>
 
@@ -42,7 +42,14 @@ function Cart() {
           {cartItems.map((item) => (
             <React.Fragment key={item.id}>
               <ListItem sx={{ py: 3, px: { xs: 2, md: 4 } }}>
-                <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', gap: 3 }}>
+                {/* Χρησιμοποιούμε Box flex αντί για Grid για να αποφύγουμε πάλι τα build errors */}
+                <Box sx={{ 
+                  display: 'flex', 
+                  width: '100%', 
+                  alignItems: 'center', 
+                  flexDirection: { xs: 'column', sm: 'row' },
+                  gap: 3 
+                }}>
                   
                   {/* Image */}
                   <Avatar 
@@ -52,7 +59,7 @@ function Cart() {
                   />
 
                   {/* Info & Controls */}
-                  <Box sx={{ flexGrow: 1 }}>
+                  <Box sx={{ flexGrow: 1, textAlign: { xs: 'center', sm: 'left' } }}>
                     <Typography variant="h6" sx={{ fontWeight: 700, color: "text.primary" }}>
                       {item.name}
                     </Typography>
@@ -61,7 +68,12 @@ function Cart() {
                       Τιμή: {Number(item.price).toFixed(2)}€
                     </Typography>
 
-                    <Stack direction="row" alignItems="center" spacing={1}>
+                    <Stack 
+                      direction="row" 
+                      alignItems="center" 
+                      spacing={1} 
+                      justifyContent={{ xs: 'center', sm: 'flex-start' }}
+                    >
                       <IconButton 
                         size="small" 
                         onClick={() => removeFromCart(item.id)} 
@@ -80,10 +92,10 @@ function Cart() {
                     </Stack>
                   </Box>
 
-                  {/* Price Label - No Overlap */}
-                  <Box sx={{ textAlign: 'right', minWidth: '110px' }}>
-                    <Typography variant="h6" sx={{ fontWeight: 900, color: "primary.main" }}>
-                      {(item.price * item.quantity).toFixed(2)}€
+                  {/* Price Label */}
+                  <Box sx={{ textAlign: { xs: 'center', sm: 'right' }, minWidth: '110px' }}>
+                    <Typography variant="h6" sx={{ fontWeight: 900, color: "#4a3728" }}>
+                      {(Number(item.price) * item.quantity).toFixed(2)}€
                     </Typography>
                   </Box>
 
@@ -97,19 +109,19 @@ function Cart() {
         {/* Footer */}
         <Box sx={{ 
           p: 4, 
-          bgcolor: "background.default", 
+          bgcolor: "#f9f9f9", 
           display: 'flex', 
           flexDirection: 'column', 
-          alignItems: 'flex-end', 
+          alignItems: { xs: 'center', sm: 'flex-end' }, 
           gap: 2 
         }}>
-          <Typography variant="h5" sx={{ fontWeight: 900, color: "primary.dark" }}>
+          <Typography variant="h5" sx={{ fontWeight: 900, color: "#4a3728" }}>
             Σύνολο: {Number(totalAmount).toFixed(2)}€
           </Typography>
           
-          <Stack direction="row" spacing={2}>
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ width: { xs: '100%', sm: 'auto' } }}>
             <Button 
-              sx={{ color: "error.main", fontWeight: 600 }} 
+              sx={{ color: "#d32f2f", fontWeight: 600 }} 
               onClick={clearCart} 
               startIcon={<DeleteIcon />}
             >
@@ -121,11 +133,11 @@ function Cart() {
               startIcon={<ShoppingCartCheckoutIcon />}
               onClick={() => navigate('/checkout')}
               sx={{ 
-                bgcolor: "primary.main", 
+                bgcolor: "#4a3728", 
                 px: 5, 
                 py: 1.5, 
                 borderRadius: "10px",
-                "&:hover": { bgcolor: "primary.light" } 
+                "&:hover": { bgcolor: "#a67c52" } 
               }}
             >
               ΟΛΟΚΛΗΡΩΣΗ

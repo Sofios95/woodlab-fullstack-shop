@@ -1,16 +1,40 @@
-/* eslint-disable react-refresh/only-export-components */
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, ReactNode } from "react";
 
+// Ορίζουμε τι είναι το Product και το CartItem
+export interface Product {
+  id: number;
+  name: string;
+  price: number;
+  image_url: string;
+  description?: string;
+}
 
-export const CartContext = createContext();
+export interface CartItem extends Product {
+  quantity: number;
+}
 
-export const CartProvider = ({ children }) => {
-  const [cartItems, setCartItems] = useState(() => {
+// Τι περιέχει το Context
+interface CartContextType {
+  cartItems: CartItem[];
+  addToCart: (product: Product) => void;
+  removeFromCart: (productId: number) => void;
+  clearCart: () => void;
+  totalAmount: number;
+}
+
+export const CartContext = createContext<CartContextType | undefined>(undefined);
+
+interface CartProviderProps {
+  children: ReactNode;
+}
+
+export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
+  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
     try {
       const savedCart = localStorage.getItem("woodlab_cart");
       return savedCart ? JSON.parse(savedCart) : [];
     } catch (error) {
-      console.error("Error")
+      console.error("Error loading cart", error);
       return [];
     }
   });
@@ -19,7 +43,7 @@ export const CartProvider = ({ children }) => {
     localStorage.setItem("woodlab_cart", JSON.stringify(cartItems));
   }, [cartItems]);
 
-  const addToCart = (product) => {
+  const addToCart = (product: Product) => {
     setCartItems((prevItems) => {
       const isItemInCart = prevItems.find((item) => item.id === product.id);
       if (isItemInCart) {
@@ -31,7 +55,7 @@ export const CartProvider = ({ children }) => {
     });
   };
 
-  const removeFromCart = (productId) => {
+  const removeFromCart = (productId: number) => {
     setCartItems((prevItems) => {
       const existingItem = prevItems.find((item) => item.id === productId);
       if (existingItem && existingItem.quantity === 1) {
