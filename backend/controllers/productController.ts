@@ -84,7 +84,7 @@ export const deleteProduct = async (
 
     res.json({ message: "Product deleted! 🗑️" });
   } catch (err: any) {
-    console.error("❌ DATABASE ERROR (deleteProduct):", err.message);
+    console.error("DATABASE ERROR (deleteProduct):", err.message);
     res.status(500).json({ error: err.message });
   }
 };

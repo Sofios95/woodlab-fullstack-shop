@@ -4,7 +4,7 @@ import {
   addProduct, 
   updateProduct, 
   deleteProduct 
-} from "../controllers/productController.js"; // <--- Προσοχή στο .js
+} from "../controllers/productController.js";
 
 // Ορίζουμε ρητά τον τύπο Router
 const router: Router = express.Router();

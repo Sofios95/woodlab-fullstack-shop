@@ -1,11 +1,6 @@
 import express, { Router, Request, Response } from "express";
 import Stripe from "stripe";
-
 const router: Router = express.Router();
-
-// Αρχικοποίηση του Stripe με τον τύπο του
-// Το process.env.STRIPE_SECRET_KEY μπορεί να είναι undefined, 
-// οπότε βάζουμε ένα fallback ή cast για να μη γκρινιάζει η TS.
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
 interface PaymentRequest {
@@ -20,7 +15,7 @@ router.post("/create-payment-intent", async (req: Request, res: Response) => {
       return res.status(400).send({ error: "Amount is required" });
     }
 
-    // Το Stripe περιμένει integers (cents), γι' αυτό το Math.round είναι σωστό
+    
     const paymentIntent: Stripe.PaymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(amount * 100),
       currency: "eur",

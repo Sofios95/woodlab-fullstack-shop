@@ -52,7 +52,7 @@ export const placeOrder = async (
     }
 
     await client.query("COMMIT");
-    res.status(201).json({ message: "Order placed! 🪵✨", orderId });
+    res.status(201).json({ message: "Order placed!", orderId });
   } catch (err: any) {
     await client.query("ROLLBACK");
     console.error("❌ TRANSACTION ERROR:", err.message);
