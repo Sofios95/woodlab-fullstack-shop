@@ -55,7 +55,7 @@ const Home: React.FC = () => {
     <Box sx={{ bgcolor: "#fdfbf9", minHeight: "100vh" }}>
       <ToastContainer position="bottom-right" theme="dark" />
 
-      {/* Hero Section */}
+      
       <Box sx={{ 
         bgcolor: "#4a3728", color: "white", py: 8, textAlign: "center", mb: 6,
         backgroundImage: 'linear-gradient(rgba(74, 55, 40, 0.8), rgba(74, 55, 40, 0.8)), url("https://woodlab.gr/wp-content/uploads/2022/05/WoodLab_Background.jpg")',
@@ -66,7 +66,7 @@ const Home: React.FC = () => {
       </Box>
 
       <Container maxWidth="lg" sx={{ pb: 10 }}>
-        {/* ΕΔΩ ΕΙΝΑΙ Η ΑΛΛΑΓΗ: Αντί για Grid χρησιμοποιούμε Box με display: grid */}
+        
         <Box sx={{ 
           display: 'grid', 
           gap: 4, 

@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import db from "../config/db.js";
 
-// 1. Ορίζουμε το Interface του Προϊόντος
 interface Product {
   id?: number;
   name: string;
@@ -11,8 +10,10 @@ interface Product {
   image_url: string;
 }
 
-// 2. getAllProducts με Types
-export const getAllProducts = async (_req: Request, res: Response): Promise<void> => {
+export const getAllProducts = async (
+  _req: Request,
+  res: Response,
+): Promise<void> => {
   console.log("--- Request: getAllProducts ---");
   try {
     const result = await db.query<Product>(`SELECT * FROM public.products`);
@@ -24,17 +25,20 @@ export const getAllProducts = async (_req: Request, res: Response): Promise<void
   }
 };
 
-// 3. addProduct με Destructuring και Types
-export const addProduct = async (req: Request, res: Response): Promise<void> => {
+export const addProduct = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   try {
-    const { name, description, price, stock_quantity, image_url }: Product = req.body;
-    
+    const { name, description, price, stock_quantity, image_url }: Product =
+      req.body;
+
     const result = await db.query<Product>(
       `INSERT INTO public.products (name, description, price, stock_quantity, image_url)
        VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-      [name, description, price, stock_quantity, image_url]
+      [name, description, price, stock_quantity, image_url],
     );
-    
+
     res.status(201).send(result.rows[0]);
   } catch (err: any) {
     console.error("❌ DATABASE ERROR (addProduct):", err.message);
@@ -42,17 +46,20 @@ export const addProduct = async (req: Request, res: Response): Promise<void> => 
   }
 };
 
-// 4. updateProduct
-export const updateProduct = async (req: Request, res: Response): Promise<void> => {
+export const updateProduct = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   try {
     const { id } = req.params;
-    const { name, price, description, image_url, stock_quantity }: Product = req.body;
-    
+    const { name, price, description, image_url, stock_quantity }: Product =
+      req.body;
+
     await db.query(
       "UPDATE public.products SET name=$1, price=$2, description=$3, image_url=$4, stock_quantity=$5 WHERE id=$6",
-      [name, price, description, image_url, stock_quantity, id]
+      [name, price, description, image_url, stock_quantity, id],
     );
-    
+
     res.json({ message: "Product updated! 🪵" });
   } catch (err: any) {
     console.error("❌ DATABASE ERROR (updateProduct):", err.message);
@@ -60,17 +67,21 @@ export const updateProduct = async (req: Request, res: Response): Promise<void> 
   }
 };
 
-// 5. deleteProduct (Εδώ θα δεις αν δουλεύει το delete που λέγαμε!)
-export const deleteProduct = async (req: Request, res: Response): Promise<void> => {
+export const deleteProduct = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   try {
     const { id } = req.params;
-    const result = await db.query("DELETE FROM public.products WHERE id = $1", [id]);
-    
+    const result = await db.query("DELETE FROM public.products WHERE id = $1", [
+      id,
+    ]);
+
     if (result.rowCount === 0) {
       res.status(404).json({ message: "Product not found" });
       return;
     }
-    
+
     res.json({ message: "Product deleted! 🗑️" });
   } catch (err: any) {
     console.error("❌ DATABASE ERROR (deleteProduct):", err.message);

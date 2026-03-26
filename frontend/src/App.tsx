@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { Box } from "@mui/material";
 
-// Components & Pages
 import Home from "./pages/Home";
 import Admin from "./pages/Admin";
 import Header from "./components/Header";
@@ -13,7 +12,6 @@ import Cart from "./pages/Cart";
 import CheckoutPage from "./components/CheckoutPage";
 import OrderSuccess from "./components/OrderSuccess";
 
-// Helper για να πηγαίνει η σελίδα πάνω-πάνω όταν αλλάζεις path
 function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => {
@@ -24,23 +22,23 @@ function ScrollToTop() {
 
 function App() {
   return (
-    <Box 
-      sx={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
-        minHeight: '100vh',
-        bgcolor: "#fffcf9" // Το ελαφρύ "ξύλινο" background
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+        bgcolor: "#fffcf9",
       }}
     >
       <ScrollToTop />
       <Header />
 
-      <Box 
-        component="main" 
-        sx={{ 
-          flexGrow: 1, 
-          display: 'flex', 
-          flexDirection: 'column' 
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          display: "flex",
+          flexDirection: "column",
         }}
       >
         <Routes>
@@ -51,7 +49,6 @@ function App() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/order-success" element={<OrderSuccess />} />
-          {/* Fallback για λάθος διευθύνσεις */}
           <Route path="*" element={<Home />} />
         </Routes>
       </Box>

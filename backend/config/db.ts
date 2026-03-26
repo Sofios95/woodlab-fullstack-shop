@@ -1,15 +1,15 @@
 import pg from "pg";
 const { Pool } = pg;
 
-// Ορίζουμε ρητά ότι το db είναι τύπου pg.Pool
+
 const db: pg.Pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized: false, // Απαραίτητο για Supabase/Render
+    rejectUnauthorized: false,
   },
 });
 
-// Προαιρετικό: Έλεγχος σύνδεσης κατά την εκκίνηση
+
 db.on('connect', () => {
   console.log("🗄️ Database connected successfully!");
 });

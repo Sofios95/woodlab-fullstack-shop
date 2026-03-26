@@ -1,6 +1,5 @@
 import React, { createContext, useState, useEffect, ReactNode } from "react";
 
-// Ορίζουμε τι είναι το Product και το CartItem
 export interface Product {
   id: number;
   name: string;
@@ -13,7 +12,6 @@ export interface CartItem extends Product {
   quantity: number;
 }
 
-// Τι περιέχει το Context
 interface CartContextType {
   cartItems: CartItem[];
   addToCart: (product: Product) => void;
@@ -22,7 +20,9 @@ interface CartContextType {
   totalAmount: number;
 }
 
-export const CartContext = createContext<CartContextType | undefined>(undefined);
+export const CartContext = createContext<CartContextType | undefined>(
+  undefined,
+);
 
 interface CartProviderProps {
   children: ReactNode;
@@ -48,7 +48,9 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
       const isItemInCart = prevItems.find((item) => item.id === product.id);
       if (isItemInCart) {
         return prevItems.map((item) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item,
         );
       }
       return [...prevItems, { ...product, quantity: 1 }];
@@ -62,15 +64,17 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
         return prevItems.filter((item) => item.id !== productId);
       } else {
         return prevItems.map((item) =>
-          item.id === productId ? { ...item, quantity: item.quantity - 1 } : item
+          item.id === productId
+            ? { ...item, quantity: item.quantity - 1 }
+            : item,
         );
       }
     });
   };
 
   const totalAmount = cartItems.reduce(
-    (acc, item) => acc + Number(item.price) * item.quantity, 
-    0
+    (acc, item) => acc + Number(item.price) * item.quantity,
+    0,
   );
 
   const clearCart = () => {
@@ -79,7 +83,9 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   };
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, clearCart, totalAmount }}>
+    <CartContext.Provider
+      value={{ cartItems, addToCart, removeFromCart, clearCart, totalAmount }}
+    >
       {children}
     </CartContext.Provider>
   );
